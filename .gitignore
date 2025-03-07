@@ -1,4 +1,6 @@
 # Ignore virtual environment
+rngmp3/
+
 venv/
 
 # Ignore Python bytecode files
