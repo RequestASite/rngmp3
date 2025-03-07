@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Download MP3 Files</title>
+  <!-- Link to the favicon image -->
+  <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #4F6175;
+      color: white;
+      font-family: 'Quicksand', sans-serif;
+      padding-top: 10px;
+      text-align: center;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    /* Contact Support Button */
+    .contact-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 8px 15px;
+      background-color: #ffcc00;
+      color: black;
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 5px;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    .contact-button:hover {
+      background-color: #e6b800;
+    }
+
+    /* FAQ Button at Top Right */
+    .faq-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 8px 15px;
+      background-color: #00ccff;
+      color: black;
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 5px;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    .faq-button:hover {
+      background-color: #0099cc;
+    }
+
+    .site-logo {
+      display: block;
+      margin: 0 auto;
+      max-width: 30%;
+      height: auto;
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+
+    .small-text {
+      font-size: 20px;
+      font-weight: 300;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      padding-bottom: 9%;
+    }
+
+    form {
+      margin: -10px auto;
+      width: 80%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #6C8EBF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #5576a3;
+    }
+
+    .info-text {
+      margin-top: 10px;
+      font-size: 20px;
+    }
+
+    .donate-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #b40101;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      font-family: 'Quicksand', sans-serif;
+      cursor: pointer;
+      text-align: center;
+      max-width: 300px;
+      margin-top: 20px;
+    }
+
+    .donate-button:hover {
+      background-color: #d82222;
+    }
+
+    .donate-button a {
+      text-decoration: none;
+      color: white;
+    }
+
+    /* Upcoming Features Section */
+    .upcoming-features {
+      background-color: #354a58;
+      color: white;
+      padding: 30px 0;
+      margin-top: 40px;
+    }
+
+    .upcoming-features h2 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .feature-list {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .feature-item {
+      max-width: 250px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-item h3 {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .feature-item p {
+      font-size: 16px;
+      font-weight: 300;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Contact Support Button -->
+  <a href="mailto:rngmp3@gmail.com" class="contact-button">Contact Support</a>
+
+  <!-- FAQ Button -->
+  <a href="{{ url_for('faq') }}" class="faq-button">FAQ</a>
+
+  <img src="{{ url_for('static', filename='images/1000024458_edited-removebg-preview.png') }}" 
+  alt="Site Logo" class="site-logo">
+
+  <p class="small-text">
+    Music Playlist Downloader - Fast and Easy
+  </p>
+
+  <form id="download-form" method="post">
+    <input type="text" id="url" name="url" placeholder="Enter YouTube URL" required>
+
+    <!-- Separate buttons for MP3 and MP4 -->
+    <button type="button" id="download-mp3">Download Playlist as Audios (MP3)</button>
+    <button type="button" id="download-mp4">Download Playlist as Videos (MP4)</button>
+
+    <p class="info-text">
+      Enter the link to a YouTube playlist of your choosing, and select the button that matches how you want it downloaded. 
+      From there, simply sit back, wait for the download process to finish, and enjoy! 
+      Note that the longer the playlist, the longer the process will take - you may need to wait for a bit!
+      
+      Consider leaving a donation if you like the site!
+    </p>
+  </form>
+
+  <a href="https://ko-fi.com/rngmp3" target="_blank">
+    <button class="donate-button">DONATE</button>
+  </a>
+
+  <!-- Upcoming Features Section -->
+  <div class="upcoming-features">
+    <h2>Upcoming Features</h2>
+    <div class="feature-list">
+      <div class="feature-item">
+        <h3>Faster Downloads</h3>
+        <p>Improving download speed for larger playlists.</p>
+      </div>
+      <div class="feature-item">
+        <h3>Spotify Support</h3>
+        <p>You'll be able to download playlists from Spotify too!</p>
+      </div>
+      <div class="feature-item">
+        <h3>Playlist And Channel Monitoring</h3>
+        <p>New videos uploaded to a channel or playlist will be sent to you automatically.</p>
+      </div>
+      <div class="feature-item">
+        <h3>Song of The Day </h3>
+        <p>We'll have a new song on the front page every day! </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Set session token if it doesn't already exist
+    if (!sessionStorage.getItem('session_token')) {
+      const sessionToken = 'your-unique-session-token';  // Get session token from server or generate one
+      sessionStorage.setItem('session_token', sessionToken);
+      console.log('Session token saved in sessionStorage: ' + sessionToken);  // Debugging log
+    }
+
+    document.getElementById('download-mp3').addEventListener('click', function () {
+      startDownload('mp3', this);
+    });
+
+    document.getElementById('download-mp4').addEventListener('click', function () {
+      startDownload('mp4', this);
+    });
+
+    async function startDownload(format, button) {
+      const urlValue = document.getElementById('url').value;
+      if (!urlValue) {
+        alert("Please enter a YouTube URL.");
+        return;
+      }
+
+      // Retrieve session token from sessionStorage
+      const sessionToken = sessionStorage.getItem('session_token');
+      if (!sessionToken) {
+        alert('Session has expired or is not valid');
+        return;
+      }
+
+      // Change button text to "Downloading"
+      button.textContent = 'Downloading...';
+      button.disabled = true;  // Optionally disable the button while downloading
+
+      const formData = new URLSearchParams();
+      formData.append('url', urlValue);
+      formData.append('format', format);
+
+      try {
+        // Make the POST request asynchronously
+        const response = await fetch('/', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${sessionToken}`  // Pass the session token in the header
+          }
+        });
+
+        const data = await response.json();
+        console.log("Response data: ", data);  // Check the response from the server
+
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+
+        let downloadCount = 0;
+        const totalFiles = data.length;
+
+        // Use for...of loop with async/await to ensure files are downloaded sequentially
+        for (const fileName of data) {
+          const link = document.createElement('a');
+          link.href = '/static/music/' + encodeURIComponent(fileName);
+          link.download = fileName;
+          document.body.appendChild(link);
+
+          // Trigger the download asynchronously
+          link.click();
+          document.body.removeChild(link);
+
+          downloadCount++;
+
+          // After all downloads are attempted, check if all files are downloaded
+          if (downloadCount === totalFiles) {
+            // Attempt to clear files after download asynchronously
+            try {
+              const clearResponse = await fetch('/clear_files', {  // Use the file cleanup route
+                method: 'POST'
+              });
+              const clearMessage = await clearResponse.json();
+              if (clearMessage.success) {
+                console.log('All files and directory deleted successfully.');
+              } else {
+                console.error('Error deleting files and directory.');
+              }
+            } catch (err) {
+              console.error('Clear error:', err);
+            }
+          }
+        }
+
+        // Once the download finishes, revert the button text and enable it again
+        button.textContent = 'Download Playlist as ' + (format === 'mp3' ? 'Audios (MP3)' : 'Videos (MP4)');
+        button.disabled = false;
+
+      } catch (error) {
+        console.error('Error:', error);
+        alert("An error occurred while processing your request.");
+        button.textContent = 'Download Playlist as ' + (format === 'mp3' ? 'Audios (MP3)' : 'Videos (MP4)');
+        button.disabled = false;
+      }
+    }
+  </script>
+
+</body>
+</html>

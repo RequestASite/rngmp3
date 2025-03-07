@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FAQ - Music Playlist Downloader</title>
+  
+  <!-- Link to the favicon image -->
+  <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #4F6175;
+      color: white;
+      font-family: 'Quicksand', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .faq-container {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: left;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    .faq-item {
+      margin-bottom: 15px;
+    }
+
+    .faq-question {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    .faq-answer {
+      font-size: 18px;
+      margin-left: 20px;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #6C8EBF;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .back-button:hover {
+      background-color: #5576a3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Frequently Asked Questions (FAQ)</h1>
+
+  <div class="faq-container">
+    <div class="faq-item">
+      <p class="faq-question">Q: Can this download Spotify playlists too?</p>
+      <p class="faq-answer">A: At the moment, it only supports YouTube. But support for Spotify is actively in the works!</p>
+    </div>
+
+
+    <div class="faq-item">
+      <p class="faq-question">Q: Why are some videos in my playlists downloading, but not others? </p>
+      <p class="faq-answer">A: Due to the way YouTube works, we may not be able to download certain types of videos, especially those that are age restricted. Support for these kinds of videos will be added in future updates</p>
+    </div>
+    
+    <div class="faq-item">
+      <p class="faq-question">Q: Why is the download taking so long?</p>
+      <p class="faq-answer">A: The length of the playlist and the file size can affect the download time. Larger playlists will  take longer to process.</p>
+    </div>
+    
+    <div class="faq-item">
+      <p class="faq-question">Q: What should I do if I encounter an error?</p>
+      <p class="faq-answer">A: Most errors will be a result of  an invalid link (i.e a link that isn't for YouTube), or if you're trying to download a video that's restricted. If you face any issues, feel free to contact us via the "Contact Support" button at the top left corner of the website.</p>
+    </div>
+
+
+    <div class="faq-item">
+        <p class="faq-question">Q: Why do I have to download each file individually? This is taking a long time!</p>
+        <p class="faq-answer">A: When using the downloader for the first time, it will ask for permission to download multiple files at once. If you don't allow this, you will have to download each file individually. However, you can reset this by wiping your browser's cache - that will make the browser forget the settings for this site, and allow the site to ask you for permission to download multiple files another time. </p>
+      </div>
+
+    <div class="faq-item">
+      <p class="faq-question">Q: Is there a way to support the site?</p>
+      <p class="faq-answer">A: Yes! If you enjoy the service, consider supporting us through a donation. Just click the "DONATE" button on the main page.</p>
+    </div>
+
+    <a href="/" class="back-button">Back to Home</a>
+  </div>
+
+</body>
+</html>
