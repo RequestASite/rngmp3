@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Download MP3 Files</title>
   <!-- Link to the favicon image -->
-  <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+  <link id="favicon" rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
   
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
@@ -164,6 +164,58 @@
       font-size: 16px;
       font-weight: 300;
     }
+
+    /* My Favorite Songs Section */
+    .favorite-songs {
+      background-color: #354a58;
+      color: white;
+      padding: 30px 0;
+      margin-top: 40px;
+    }
+
+    .favorite-songs h2 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .song-list {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .song-item {
+      max-width: 250px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .song-thumbnail {
+      width: 150px; /* Adjust width */
+      height: 100px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .song-item p {
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 5px;
+      color: white;
+    }
+
+    .song-item a {
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .song-item a:hover {
+      text-decoration: underline;
+    }
+
   </style>
 </head>
 <body>
@@ -189,9 +241,9 @@
     <button type="button" id="download-mp4">Download Playlist as Videos (MP4)</button>
 
     <p class="info-text">
-      Enter the link to a YouTube playlist of your choosing, and select the button that matches how you want it downloaded. 
+      Enter the link to a YouTube playlist or video of your choosing, and select the button that matches how you want it downloaded. 
       From there, simply sit back, wait for the download process to finish, and enjoy! 
-      Note that the longer the playlist, the longer the process will take - you may need to wait for a bit!
+      Note that the playlist needs to be set to "Public" for you to download it, and the longer it is, the longer the process will take - you may need to wait for a bit!
       
       Consider leaving a donation if you like the site!
     </p>
@@ -224,110 +276,112 @@
     </div>
   </div>
 
-  <script>
-    // Set session token if it doesn't already exist
-    if (!sessionStorage.getItem('session_token')) {
-      const sessionToken = 'your-unique-session-token';  // Get session token from server or generate one
-      sessionStorage.setItem('session_token', sessionToken);
-      console.log('Session token saved in sessionStorage: ' + sessionToken);  // Debugging log
-    }
+  <!-- My Favorite Songs Section -->
+  <div class="favorite-songs">
+    <h2>Try A Song!</h2>
+    <div class="song-list">
+      <div class="song-item">
+        <a href="https://www.youtube.com/watch?v=uSiHqxgE2d0" target="_blank">
+          <img src="static/images/RaCharles_HTRJ.png" alt="Hit The Road Jack - Ray Charles" class="song-thumbnail">
+          <p>Hit The Road Jack - Ray Charles</p>
+        </a>
+      </div>
+      <div class="song-item">
+        <a href="https://www.youtube.com/watch?v=pB-5XG-DbAA&list=OLAK5uy_mO8nTkN8cjD0i9lgLls1fZYvbQkQdOYjc" target="_blank">
+          <img src="static/images/samsmith.jpeg" alt="Stay With Me - Sam Smith" class="song-thumbnail">
+          <p>Stay With Me - Sam Smith</p>
+        </a>
+      </div>
+      <div class="song-item">
+        <a href="https://www.youtube.com/watch?v=1Al-nuR1iAU" target="_blank">
+          <img src="static/images/711178ded28f8078.png" alt="Skin - Rag'n'Bone Man" class="song-thumbnail">
+          <p>Skin - Rag'n'Bone Man</p>
+        </a>
+      </div>
+      <div class="song-item">
+        <a href="https://www.youtube.com/watch?v=j3nYx9Hx-Os" target="_blank">
+          <img src="static/images/kendrick_lamar_alright-700954573-large.jpg" alt="Alright - Kendrick Lamar" class="song-thumbnail">
+          <p>Alright - Kendrick Lamar</p>
+        </a>
+      </div>
+    </div>
+  </div>
 
-    document.getElementById('download-mp3').addEventListener('click', function () {
-      startDownload('mp3', this);
+<script>
+document.getElementById('download-mp3').addEventListener('click', function () {
+  startDownload('mp3', this);
+});
+
+document.getElementById('download-mp4').addEventListener('click', function () {
+  startDownload('mp4', this);
+});
+
+async function startDownload(format, button) {
+  const urlValue = document.getElementById('url').value;
+  if (!urlValue) {
+    alert("Please enter a YouTube URL.");
+    return;
+  }
+
+  // Start the loading dots effect
+  let dotCount = 0;
+  let dotsInterval = setInterval(() => {
+    document.title = "Downloading" + '.'.repeat(dotCount);
+    dotCount = (dotCount + 1) % 4; // Cycle from 0 to 3 dots
+  }, 500); // Update every 500ms
+
+  button.textContent = 'Downloading...';
+  button.disabled = true;
+
+  const formData = new URLSearchParams();
+  formData.append('url', urlValue);
+  formData.append('format', format);
+
+  try {
+    const response = await fetch('/', {
+      method: 'POST',
+      body: formData,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     });
 
-    document.getElementById('download-mp4').addEventListener('click', function () {
-      startDownload('mp4', this);
-    });
-
-    async function startDownload(format, button) {
-      const urlValue = document.getElementById('url').value;
-      if (!urlValue) {
-        alert("Please enter a YouTube URL.");
-        return;
-      }
-
-      // Retrieve session token from sessionStorage
-      const sessionToken = sessionStorage.getItem('session_token');
-      if (!sessionToken) {
-        alert('Session has expired or is not valid');
-        return;
-      }
-
-      // Change button text to "Downloading"
-      button.textContent = 'Downloading...';
-      button.disabled = true;  // Optionally disable the button while downloading
-
-      const formData = new URLSearchParams();
-      formData.append('url', urlValue);
-      formData.append('format', format);
-
-      try {
-        // Make the POST request asynchronously
-        const response = await fetch('/', {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${sessionToken}`  // Pass the session token in the header
-          }
-        });
-
-        const data = await response.json();
-        console.log("Response data: ", data);  // Check the response from the server
-
-        if (data.error) {
-          alert(data.error);
-          return;
-        }
-
-        let downloadCount = 0;
-        const totalFiles = data.length;
-
-        // Use for...of loop with async/await to ensure files are downloaded sequentially
-        for (const fileName of data) {
-          const link = document.createElement('a');
-          link.href = '/static/music/' + encodeURIComponent(fileName);
-          link.download = fileName;
-          document.body.appendChild(link);
-
-          // Trigger the download asynchronously
-          link.click();
-          document.body.removeChild(link);
-
-          downloadCount++;
-
-          // After all downloads are attempted, check if all files are downloaded
-          if (downloadCount === totalFiles) {
-            // Attempt to clear files after download asynchronously
-            try {
-              const clearResponse = await fetch('/clear_files', {  // Use the file cleanup route
-                method: 'POST'
-              });
-              const clearMessage = await clearResponse.json();
-              if (clearMessage.success) {
-                console.log('All files and directory deleted successfully.');
-              } else {
-                console.error('Error deleting files and directory.');
-              }
-            } catch (err) {
-              console.error('Clear error:', err);
-            }
-          }
-        }
-
-        // Once the download finishes, revert the button text and enable it again
-        button.textContent = 'Download Playlist as ' + (format === 'mp3' ? 'Audios (MP3)' : 'Videos (MP4)');
-        button.disabled = false;
-
-      } catch (error) {
-        console.error('Error:', error);
-        alert("An error occurred while processing your request.");
-        button.textContent = 'Download Playlist as ' + (format === 'mp3' ? 'Audios (MP3)' : 'Videos (MP4)');
-        button.disabled = false;
-      }
+    const data = await response.json();
+    if (data.error) {
+      alert(data.error);
+      return;
     }
-  </script>
+
+    document.cookie = `downloaded_files=${JSON.stringify(data)}; path=/;`;
+
+    for (const fileName of data) {
+      const decodedFileName = decodeURIComponent(fileName);
+      const link = document.createElement('a');
+      link.href = `/static/music/${decodedFileName}`;
+      link.download = decodedFileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    setTimeout(async () => {
+      await fetch('/clear_files', { method: 'POST' });
+    }, 5000);
+
+    button.textContent = 'Download Completed';
+    button.disabled = false;
+
+  } catch (error) {
+    console.error('Error:', error);
+    alert("An error occurred.");
+    button.textContent = 'Download Failed';
+    button.disabled = false;
+
+  } finally {
+    // Stop the loading dots effect and reset the title
+    clearInterval(dotsInterval);
+    document.title = "Download MP3 Files";
+  }
+}
+</script>
 
 </body>
 </html>
