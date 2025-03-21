@@ -264,4 +264,4 @@ def run_command(command):
         return e.stdout, e.stderr
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='10.0.0.4', port=5000, debug=True)
