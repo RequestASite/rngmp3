@@ -1,386 +1,388 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Download MP3 Files</title>
-  <!-- Link to the favicon image -->
-  <link id="favicon" rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
-  
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background-color: #4F6175;
-      color: white;
-      font-family: 'Quicksand', sans-serif;
-      padding-top: 10px;
-      text-align: center;
-      position: relative;
-      min-height: 100vh;
-    }
+    <meta charset="UTF-8">
+    <title>RNGMP3 - The #1 YouTube Playlist Downloader</title>
+    <meta name="description"
+          content="Download YouTube videos and playlists as MP3 or MP4 files easily and for free. No ads - great for music downloading">
 
-    /* Contact Support Button */
-    .contact-button {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      padding: 8px 15px;
-      background-color: #ffcc00;
-      color: black;
-      font-size: 14px;
-      font-weight: bold;
-      text-decoration: none;
-      border-radius: 5px;
-      font-family: 'Quicksand', sans-serif;
-    }
+    <link id="favicon" rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
 
-    .contact-button:hover {
-      background-color: #e6b800;
-    }
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #4F6175;
+            color: white;
+            font-family: 'Quicksand', sans-serif;
+            padding-top: 10px;
+            text-align: center;
+            position: relative;
+            min-height: 100vh;
+        }
 
-    /* FAQ Button at Top Right */
-    .faq-button {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      padding: 8px 15px;
-      background-color: #00ccff;
-      color: black;
-      font-size: 14px;
-      font-weight: bold;
-      text-decoration: none;
-      border-radius: 5px;
-      font-family: 'Quicksand', sans-serif;
-    }
+        /* Contact Support Button */
+        .contact-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 8px 15px;
+            background-color: #ffcc00;
+            color: black;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 5px;
+            font-family: 'Quicksand', sans-serif;
+        }
 
-    .faq-button:hover {
-      background-color: #0099cc;
-    }
+        .contact-button:hover {
+            background-color: #e6b800;
+        }
 
-    .site-logo {
-      display: block;
-      margin: 0 auto;
-      max-width: 30%;
-      height: auto;
-      margin-top: 10px;
-      margin-bottom: 0;
-    }
+        /* FAQ Button at Top Right */
+        .faq-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 8px 15px;
+            background-color: #00ccff;
+            color: black;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 5px;
+            font-family: 'Quicksand', sans-serif;
+        }
 
-    .small-text {
-      font-size: 20px;
-      font-weight: 300;
-      margin-top: 5px;
-      margin-bottom: 10px;
-      padding-bottom: 9%;
-    }
+        .faq-button:hover {
+            background-color: #0099cc;
+        }
 
-    form {
-      margin: -10px auto;
-      width: 80%;
-      max-width: 600px;
-      text-align: center;
-    }
+        .site-logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 30%;
+            height: auto;
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
 
-    input, button {
-      padding: 8px;
-      margin: 5px 0;
-      width: 100%;
-      border: none;
-      border-radius: 5px;
-    }
+        .small-text {
+            font-size: 20px;
+            font-weight: 300;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            padding-bottom: 9%;
+        }
 
-    button {
-      background-color: #6C8EBF;
-      color: white;
-      cursor: pointer;
-    }
+        form {
+            margin: -10px auto;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
 
-    button:hover {
-      background-color: #5576a3;
-    }
+        input, button {
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+        }
 
-    .info-text {
-      margin-top: 10px;
-      font-size: 20px;
-    }
+        button {
+            background-color: #6C8EBF;
+            color: white;
+            cursor: pointer;
+        }
 
-    .donate-button {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #b40101;
-      color: white;
-      font-size: 14px;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      font-family: 'Quicksand', sans-serif;
-      cursor: pointer;
-      text-align: center;
-      max-width: 300px;
-      margin-top: 20px;
-    }
+        button:hover {
+            background-color: #5576a3;
+        }
 
-    .donate-button:hover {
-      background-color: #d82222;
-    }
+        .info-text {
+            margin-top: 10px;
+            font-size: 20px;
+        }
 
-    .donate-button a {
-      text-decoration: none;
-      color: white;
-    }
+        .donate-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #b40101;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Quicksand', sans-serif;
+            cursor: pointer;
+            text-align: center;
+            max-width: 300px;
+            margin-top: 20px;
+        }
 
-    /* Upcoming Features Section */
-    .upcoming-features {
-      background-color: #354a58;
-      color: white;
-      padding: 30px 0;
-      margin-top: 40px;
-    }
+        .donate-button:hover {
+            background-color: #d82222;
+        }
 
-    .upcoming-features h2 {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
+        .donate-button a {
+            text-decoration: none;
+            color: white;
+        }
 
-    .feature-list {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
+        /* Upcoming Features Section */
+        .upcoming-features {
+            background-color: #354a58;
+            color: white;
+            padding: 30px 0;
+            margin-top: 40px;
+        }
 
-    .feature-item {
-      max-width: 250px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
+        .upcoming-features h2 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
 
-    .feature-item h3 {
-      font-size: 20px;
-      font-weight: bold;
-    }
+        .feature-list {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
 
-    .feature-item p {
-      font-size: 16px;
-      font-weight: 300;
-    }
+        .feature-item {
+            max-width: 250px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-    /* My Favorite Songs Section */
-    .favorite-songs {
-      background-color: #354a58;
-      color: white;
-      padding: 30px 0;
-      margin-top: 40px;
-    }
+        .feature-item h3 {
+            font-size: 20px;
+            font-weight: bold;
+        }
 
-    .favorite-songs h2 {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
+        .feature-item p {
+            font-size: 16px;
+            font-weight: 300;
+        }
 
-    .song-list {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      flex-wrap: wrap;
+        /* My Favorite Songs Section */
+        .favorite-songs {
+            background-color: #354a58;
+            color: white;
+            padding: 30px 0;
+            margin-top: 40px;
+        }
+
+        .favorite-songs h2 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .song-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
     }
 
     .song-item {
-      max-width: 250px;
-      text-align: center;
-      margin-bottom: 20px;
+        width: 100%;
+        text-align: center; /* Keep text-align center */
     }
 
-    .song-thumbnail {
-      width: 150px; /* Adjust width */
-      height: 100px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-    }
-
-    .song-item p {
-      font-size: 16px;
-      font-weight: bold;
-      margin-top: 5px;
-      color: white;
-    }
-
+    /* STYLED "TRY A SONG" BUTTONS  */
     .song-item a {
-      text-decoration: none;
-      display: inline-block;
-      text-align: center;
+        font-size: 24px;
+        padding: 15px 30px;
+        width: 500px;
+        margin: 10px auto; /* Keep auto margins for centering */
+        margin-left: 30%; /* Add a left margin to shift right */
+        display: block;
+        background-color: #6C8EBF;
+        color: white;
+        text-decoration: none;
+        border-radius: 15px;
+        text-align: center;
     }
 
-    .song-item a:hover {
-      text-decoration: underline;
-    }
+        .song-item a:hover {
+            background-color: #5576a3;
+        }
 
-  </style>
+
+        .song-item p {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 5px;
+            color: white;
+
+        }
+
+        .song-item a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
 </head>
 <body>
 
-  <!-- Contact Support Button -->
-  <a href="mailto:rngmp3@gmail.com" class="contact-button">Contact Support</a>
+<a href="mailto:rngmp3@gmail.com" class="contact-button">Contact Support</a>
 
-  <!-- FAQ Button -->
-  <a href="{{ url_for('faq') }}" class="faq-button">FAQ</a>
+<a href="{{ url_for('faq') }}" class="faq-button">FAQ</a>
 
-  <img src="{{ url_for('static', filename='images/1000024458_edited-removebg-preview.png') }}" 
-  alt="Site Logo" class="site-logo">
+<img src="{{ url_for('static', filename='images/1000024458_edited-removebg-preview.png') }}"
+     alt="Site Logo" class="site-logo">
 
-  <p class="small-text">
+<p class="small-text">
     Music Playlist Downloader - Fast and Easy
-  </p>
+</p>
 
-  <form id="download-form" method="post">
+<form id="download-form" method="post">
     <input type="text" id="url" name="url" placeholder="Enter YouTube URL" required>
 
-    <!-- Separate buttons for MP3 and MP4 -->
     <button type="button" id="download-mp3">Download Playlist as Audios (MP3)</button>
     <button type="button" id="download-mp4">Download Playlist as Videos (MP4)</button>
 
     <p class="info-text">
-      Enter the link to a YouTube playlist or video of your choosing, and select the button that matches how you want it downloaded. 
-      From there, simply sit back, wait for the download process to finish, and enjoy! 
-      Note that the playlist needs to be set to "Public" for you to download it, and the longer it is, the longer the process will take - you may need to wait for a bit!
-      
-      Consider leaving a donation if you like the site!
+        Enter the link to a YouTube playlist or video, and select the button that matches how you want it downloaded.
+        Note that Privated content can't be downloaded, and that playlists may take a few minutes to download - make
+        sure to leave the tab open!
+        Consider leaving a donation if you like the site!
     </p>
-  </form>
+</form>
 
-  <a href="https://ko-fi.com/rngmp3" target="_blank">
+<a href="https://ko-fi.com/rngmp3" target="_blank">
     <button class="donate-button">DONATE</button>
-  </a>
+</a>
 
-  <!-- Upcoming Features Section -->
-  <div class="upcoming-features">
+<div class="upcoming-features">
     <h2>Upcoming Features</h2>
     <div class="feature-list">
-      <div class="feature-item">
-        <h3>Faster Downloads</h3>
-        <p>Improving download speed for larger playlists.</p>
-      </div>
-      <div class="feature-item">
-        <h3>Spotify Support</h3>
-        <p>You'll be able to download playlists from Spotify too!</p>
-      </div>
-      <div class="feature-item">
-        <h3>Playlist And Channel Monitoring</h3>
-        <p>New videos uploaded to a channel or playlist will be sent to you automatically.</p>
-      </div>
-      <div class="feature-item">
-        <h3>Song of The Day </h3>
-        <p>We'll have a new song on the front page every day! </p>
-      </div>
+        <div class="feature-item">
+            <h3>Faster Downloads</h3>
+            <p>Improving download speed for larger playlists.</p>
+        </div>
+        <div class="feature-item">
+            <h3>Spotify Support</h3>
+            <p>You'll be able to download playlists from Spotify too!</p>
+        </div>
+        <div class="feature-item">
+            <h3>Playlist And Channel Monitoring</h3>
+            <p>New videos uploaded to a channel or playlist will be sent to you automatically.</p>
+        </div>
+        <div class="feature-item">
+            <h3>Song of The Day</h3>
+            <p>We'll have a new song on the front page every day!</p>
+        </div>
     </div>
-  </div>
+</div>
 
-  <!-- My Favorite Songs Section -->
-  <div class="favorite-songs">
+<div class="favorite-songs">
     <h2>Try A Song!</h2>
     <div class="song-list">
-      <div class="song-item">
-        <a href="https://www.youtube.com/watch?v=uSiHqxgE2d0" target="_blank">
-          <img src="static/images/RaCharles_HTRJ.png" alt="Hit The Road Jack - Ray Charles" class="song-thumbnail">
-          <p>Hit The Road Jack - Ray Charles</p>
-        </a>
-      </div>
-      <div class="song-item">
-        <a href="https://www.youtube.com/watch?v=pB-5XG-DbAA&list=OLAK5uy_mO8nTkN8cjD0i9lgLls1fZYvbQkQdOYjc" target="_blank">
-          <img src="static/images/samsmith.jpeg" alt="Stay With Me - Sam Smith" class="song-thumbnail">
-          <p>Stay With Me - Sam Smith</p>
-        </a>
-      </div>
-      <div class="song-item">
-        <a href="https://www.youtube.com/watch?v=1Al-nuR1iAU" target="_blank">
-          <img src="static/images/711178ded28f8078.png" alt="Skin - Rag'n'Bone Man" class="song-thumbnail">
-          <p>Skin - Rag'n'Bone Man</p>
-        </a>
-      </div>
-      <div class="song-item">
-        <a href="https://www.youtube.com/watch?v=j3nYx9Hx-Os" target="_blank">
-          <img src="static/images/kendrick_lamar_alright-700954573-large.jpg" alt="Alright - Kendrick Lamar" class="song-thumbnail">
-          <p>Alright - Kendrick Lamar</p>
-        </a>
-      </div>
+        <div class="song-item">
+            <a href="https://www.youtube.com/watch?v=uSiHqxgE2d0" target="_blank">
+    
+                Hit The Road Jack - Ray Charles
+            </a>
+        </div>
+        <div class="song-item">
+            <a href="https://www.youtube.com/watch?v=pB-5XG-DbAA&list=OLAK5uy_mO8nTkN8cjD0i9lgLls1fZYvbQkQdOYjc" target="_blank">
+               
+                Stay With Me - Sam Smith
+            </a>
+        </div>
+        <div class="song-item">
+            <a href="https://www.youtube.com/watch?v=1Al-nuR1iAU" target="_blank">
+                
+                Stay With Me - Sam Smith
+            </a>
+        </div>
+        <div class="song-item">
+            <a href="https://www.youtube.com/watch?v=j3nYx9Hx-Os" target="_blank">
+
+                Alright - Kendrick Lamar
+            </a>
+        </div>
     </div>
-  </div>
+</div>
 
 <script>
-document.getElementById('download-mp3').addEventListener('click', function () {
-  startDownload('mp3', this);
-});
-
-document.getElementById('download-mp4').addEventListener('click', function () {
-  startDownload('mp4', this);
-});
-
-async function startDownload(format, button) {
-  const urlValue = document.getElementById('url').value;
-  if (!urlValue) {
-    alert("Please enter a YouTube URL.");
-    return;
-  }
-
-  // Start the loading dots effect
-  let dotCount = 0;
-  let dotsInterval = setInterval(() => {
-    document.title = "Downloading" + '.'.repeat(dotCount);
-    dotCount = (dotCount + 1) % 4; // Cycle from 0 to 3 dots
-  }, 500); // Update every 500ms
-
-  button.textContent = 'Downloading...';
-  button.disabled = true;
-
-  const formData = new URLSearchParams();
-  formData.append('url', urlValue);
-  formData.append('format', format);
-
-  try {
-    const response = await fetch('/', {
-      method: 'POST',
-      body: formData,
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    document.getElementById('download-mp3').addEventListener('click', function () {
+        startDownload('mp3', this);
     });
 
-    const data = await response.json();
-    if (data.error) {
-      alert(data.error);
-      return;
+    document.getElementById('download-mp4').addEventListener('click', function () {
+        startDownload('mp4', this);
+    });
+
+    async function startDownload(format, button) {
+        const urlValue = document.getElementById('url').value;
+        if (!urlValue) {
+            alert("Please enter a YouTube URL.");
+            return;
+        }
+
+        // Start the loading dots effect
+        let dotCount = 0;
+        let dotsInterval = setInterval(() => {
+            document.title = "Downloading" + '.'.repeat(dotCount);
+            dotCount = (dotCount + 1) % 4; // Cycle from 0 to 3 dots
+        }, 500); // Update every 500ms
+
+        button.textContent = 'Downloading...';
+        button.disabled = true;
+
+        const formData = new URLSearchParams();
+        formData.append('url', urlValue);
+        formData.append('format', format);
+
+        try {
+            const response = await fetch('/', {
+                method: 'POST',
+                body: formData,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+
+            const data = await response.json();
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            document.cookie = `downloaded_files=${JSON.stringify(data)}; path=/;`;
+
+            for (const fileName of data) {
+                const decodedFileName = decodeURIComponent(fileName);
+                const link = document.createElement('a');
+                link.href = `/static/music/${decodedFileName}`;
+                link.download = decodedFileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            setTimeout(async () => {
+                await fetch('/clear_files', {method: 'POST'});
+            }, 5000);
+
+            button.textContent = 'Download Completed';
+            button.disabled = false;
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert("An error occurred.");
+            button.textContent = 'Download Failed';
+            button.disabled = false;
+
+        } finally {
+            // Stop the loading dots effect and reset the title
+            clearInterval(dotsInterval);
+            document.title = "Download MP3 Files";
+        }
     }
-
-    document.cookie = `downloaded_files=${JSON.stringify(data)}; path=/;`;
-
-    for (const fileName of data) {
-      const decodedFileName = decodeURIComponent(fileName);
-      const link = document.createElement('a');
-      link.href = `/static/music/${decodedFileName}`;
-      link.download = decodedFileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    setTimeout(async () => {
-      await fetch('/clear_files', { method: 'POST' });
-    }, 5000);
-
-    button.textContent = 'Download Completed';
-    button.disabled = false;
-
-  } catch (error) {
-    console.error('Error:', error);
-    alert("An error occurred.");
-    button.textContent = 'Download Failed';
-    button.disabled = false;
-
-  } finally {
-    // Stop the loading dots effect and reset the title
-    clearInterval(dotsInterval);
-    document.title = "Download MP3 Files";
-  }
-}
 </script>
 
 </body>

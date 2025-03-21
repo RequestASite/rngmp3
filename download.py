@@ -1,80 +1,227 @@
-import subprocess
 import os
+import subprocess
+from playwright.sync_api import sync_playwright
+import logging
+import time
+import urllib.parse
 import glob
+import re  # Import the regular expression module
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+cookies_file = "cookies.txt"
+youtube_url = "https://www.youtube.com"  # URL to check if cookies are valid
 
-def download_video(url, dir, format="mp3"):
-    ffmpeg_location = r"ffmpeg-master-latest-win64-gpl-shared\bin\ffmpeg.exe"  # Absolute path to ffmpeg
-    
-    if format == "mp3":
-        # Directly download audio as mp3 using yt-dlp
-        command = f'yt-dlp -f bestaudio --extract-audio --audio-format mp3 -o "{os.path.join(dir, "%(title)s.%(ext)s")}" --ffmpeg-location "{ffmpeg_location}" "{url}"'
-        subprocess.run(command, shell=True, check=True)
-        
-        # Get the downloaded mp3 files
-        mp3_files = glob.glob(os.path.join(dir, "*.mp3"))
-        if not mp3_files:
-            return {"error": "No mp3 files were downloaded."}
-        
-        file_names = [os.path.basename(mp3) for mp3 in mp3_files]
-        return file_names
-    
-    elif format == "mp4":
-        # Download video and audio for each entry in the playlist
-        command_video = f'yt-dlp -f bestvideo[ext=mp4] -o "{os.path.join(dir, "%(title)s.%(ext)s")}" --ffmpeg-location "{ffmpeg_location}" "{url}"'
-        command_audio = f'yt-dlp -f bestaudio[ext=m4a] -o "{os.path.join(dir, "%(title)s.%(ext)s")}" --ffmpeg-location "{ffmpeg_location}" "{url}"'
-        
-        # Run the download commands for video and audio (playlist handling)
-        subprocess.run(command_video, shell=True, check=True)
-        subprocess.run(command_audio, shell=True, check=True)
-        
-        # Get the downloaded video and audio files for the playlist
-        video_files = glob.glob(os.path.join(dir, "*.mp4"))
-        audio_files = glob.glob(os.path.join(dir, "*.m4a"))
-        
-        if len(video_files) != len(audio_files):
-            return {"error": "Mismatch between the number of video and audio files downloaded."}
+def convert_to_netscape(input_file, output_file):
+    try:
+        with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
+            outfile.write("# Netscape HTTP Cookie File\n")
+            for line in infile:
+                parts = line.strip().split('\t')
+                if len(parts) == 6:
+                    name, domain, path, secure, expiry, value = parts
+                    outfile.write(f"{domain}\tTRUE\t{path}\t{secure}\t{expiry}\t{name}\t{value}\n")
+        logging.info(f"Cookies converted to Netscape format: {output_file}")
+    except Exception as e:
+        logging.error(f"Error converting cookies: {e}")
 
-        output_files = []
-        
-        for video_file, audio_file in zip(video_files, audio_files):
-            # Ensure proper handling of spaces in filenames by quoting the paths
-            video_file = f'"{video_file}"'
-            audio_file = f'"{audio_file}"'
-            
-            # Define the output file for each video/audio pair
-            output_file = os.path.splitext(video_file.strip('"'))[0] + "_final.mp4"
-            output_file = f'"{output_file}"'
-            
-            # Merge the video and audio using ffmpeg
-            merge_command = f'{ffmpeg_location} -i {video_file} -i {audio_file} -c:v copy -c:a aac -strict experimental {output_file}'
-            subprocess.run(merge_command, shell=True, check=True)
-            
-            # Add the output file to the list
-            output_files.append(os.path.basename(output_file.strip('"')))
-            
-            # Clean up the individual video and audio files
-            os.remove(video_file.strip('"'))  # Remove the quotes
-            os.remove(audio_file.strip('"'))  # Remove the quotes
-        
-        return output_files
-    
-    else:
-        return {"error": "Invalid format specified. Use 'mp3' or 'mp4'."}
+def load_cookies(context, cookies_file):
+    if os.path.exists(cookies_file):
+        with open(cookies_file, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if not line.startswith("#"):
+                    parts = line.split("\t")
+                    if len(parts) == 7:
+                        cookie = {}
+                        cookie['domain'] = parts[0]
+                        cookie['httpOnly'] = True if parts[1].upper() == "TRUE" else False
+                        cookie['path'] = parts[2]
+                        cookie['secure'] = True if parts[3].upper() == "TRUE" else False
+                        try:
+                            cookie['expires'] = int(float(parts[4])) if parts[4] else None
+                        except ValueError:
+                            logging.error(f"Invalid expires value: {parts[4]}")
+                            cookie['expires'] = None
+                        cookie['name'] = parts[5]
+                        cookie['value'] = parts[6]
+                        context.add_cookies([cookie])
+
+def save_cookies(page, cookies_file):
+    cookies = page.context.cookies()
+    with open(cookies_file, 'w') as f:
+        f.write("# Netscape HTTP Cookie File\n")
+        for cookie in cookies:
+            domain = cookie["domain"]
+            http_only = "TRUE" if cookie.get("httpOnly") else "FALSE"
+            path = cookie["path"]
+            secure = "TRUE" if cookie["secure"] else "FALSE"
+            expiry = cookie.get("expires", "")
+            name = cookie["name"]
+            value = cookie["value"]
+            f.write(f"{domain}\t{http_only}\t{path}\t{secure}\t{expiry}\t{name}\t{value}\n")
+
+def refresh_youtube_cookies():
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            load_cookies(page.context, cookies_file)
+            page.goto(youtube_url)
+            time.sleep(5)  # Allow time for cookies to take effect
+            save_cookies(page, cookies_file)
+            browser.close()
+            logging.info("YouTube cookies refreshed.")
+    except Exception as e:
+        logging.error(f"Error refreshing cookies: {e}")
+
+def decode_utf8_with_replace(byte_string):
+    try:
+        decoded_string = byte_string.decode('utf-8')
+        return urllib.parse.unquote(decoded_string)
+    except UnicodeDecodeError:
+        decoded_string = byte_string.decode('utf-8', errors='replace')
+        return urllib.parse.unquote(decoded_string)
+
+def sanitize_filename(filename):
+    """Sanitizes a filename by removing or replacing problematic characters."""
+    allowed_chars = r"[^a-zA-Z0-9_\-\.\(\) ]"  # Allow letters, numbers, underscores, hyphens, periods, parentheses, and spaces
+    sanitized_name = re.sub(allowed_chars, "_", filename)
+    return sanitized_name
+
+def download_video(url, dir, format, ffmpeg_location=r"ffmpeg-master-latest-win64-gpl-shared\bin\ffmpeg.exe"):
+    refresh_youtube_cookies()  # Refresh cookies before each download
+    netscape_cookies = "netscape_cookies.txt"
+    convert_to_netscape(cookies_file, netscape_cookies)
 
     try:
-        # Get the downloaded final file(s)
-        downloaded_files = glob.glob(os.path.join(dir, f"*.{file_extension}"))
-        
-        if not downloaded_files:
-            return {"error": "No files were downloaded."}
-        
-        # Return the names of the final downloaded files
-        file_names = [os.path.basename(f) for f in downloaded_files]
-        return file_names
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            try:
+                logging.info(f"Downloading {url} to {dir} in {format} format.")
+                page.goto(url)
+                time.sleep(3)
+                final_url_bytes = page.url.encode('utf-8')
+                final_url = decode_utf8_with_replace(final_url_bytes)
+            except Exception as e:
+                logging.error(f"Playwright error: {e}")
+                browser.close()
+                return {"error": f"Playwright error: {e}"}
+            browser.close()
 
-    except subprocess.CalledProcessError as e:
-        return {"error": "Download failed."}
-    except Exception as e:
-        return {"error": "Unexpected error during download."}
+        if format == "mp3":
+            command = (
+                f'yt-dlp -f bestaudio --extract-audio --audio-format mp3 '
+                f'--cookies "{netscape_cookies}" '
+                f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
+                f'--ffmpeg-location "{ffmpeg_location}" "{final_url}"'
+            )
+            result = subprocess.run(command, shell=True, capture_output=True, text=True)
+            if result.returncode != 0:
+                logging.error(f"yt-dlp error: {result.stderr}")
+                return {"error": f"yt-dlp error: {result.stderr}"}
+            mp3_files = glob.glob(os.path.join(dir, "*.mp3"))
+            if not mp3_files:
+                return {"error": "No mp3 files were downloaded."}
+            file_names = [os.path.basename(file) for file in mp3_files]
+            sanitized_file_names = [sanitize_filename(name) for name in file_names]
+            files_to_rename = [] #store the files that need to be renamed.
+            for original, sanitized in zip(file_names, sanitized_file_names):
+                if original != sanitized:
+                    files_to_rename.append((os.path.join(dir,original),os.path.join(dir,sanitized)))
+            return {"success": sanitized_file_names, "files_to_rename": files_to_rename}
+        elif format == "mp4":
+            command_video = (
+                f'yt-dlp -f bestvideo[ext=mp4] --cookies "{netscape_cookies}" '
+                f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
+                f'--ffmpeg-location "{ffmpeg_location}" "{final_url}"'
+            )
+            command_audio = (
+                f'yt-dlp -f bestaudio[ext=m4a] --cookies "{netscape_cookies}" '
+                f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
+                f'--ffmpeg-location "{ffmpeg_location}" "{final_url}"'
+            )
+            result_video = subprocess.run(command_video, shell=True, capture_output=True, text=True)
+            result_audio = subprocess.run(command_audio, shell=True, capture_output=True, text=True)
+            if result_video.returncode != 0:
+                logging.error(f"yt-dlp video error: {result_video.stderr}")
+                return {"error": f"yt-dlp video error: {result_video.stderr}"}
+            if result_audio.returncode != 0:
+                logging.error(f"yt-dlp audio error: {result_audio.stderr}")
+                return {"error": f"yt-dlp audio error: {result_audio.stderr}"}
+            video_files = glob.glob(os.path.join(dir, "*.mp4"))
+            audio_files = glob.glob(os.path.join(dir, "*.m4a"))
+            if len(video_files) != len(audio_files):
+                return {"error": "Mismatch between video and audio files."}
+            output_files = []
+            files_to_delete = []  # Store paths of files to delete later
+
+            for video_file, audio_file in zip(video_files, audio_files):
+                output_file = os.path.splitext(video_file)[0] + "_final.mp4"
+                merge_command = (
+                    f'"{ffmpeg_location}" -i "{video_file}" -i "{audio_file}" '
+                    f'-c:v copy -c:a aac -strict experimental "{output_file}"'
+                )
+                try:
+                    subprocess.run(merge_command, shell=True, check=True)
+                    output_files.append(os.path.basename(output_file))
+                    files_to_delete.append(video_file)  # Store for later deletion
+                    files_to_delete.append(audio_file)  # Store for later deletion
+
+                except subprocess.CalledProcessError as e:
+                    logging.error(f"FFmpeg merge error: {e.stderr}")
+                    return {"error": f"FFmpeg merge error: {e.stderr}"}
+                except Exception as e:
+                    logging.error(f"Error merging files: {e}")
+                    return {"error": f"Error merging files: {e}"}
+
+            sanitized_output_files = [sanitize_filename(name) for name in output_files]
+            for original, sanitized in zip(output_files, sanitized_output_files):
+                if original != sanitized:
+                    os.rename(os.path.join(dir, original), os.path.join(dir, sanitized))
+
+            return {"success": sanitized_output_files, "files_to_delete": files_to_delete} #return the files to be deleted
+
+    except Exception as overall_e:
+        logging.error(f"Overall download error: {overall_e}")
+        return {"error": f"Overall download error: {overall_e}"}
+
+# Example usage:
+if __name__ == "__main__":
+    url_to_download = "YOUR_YOUTUBE_URL_HERE"  # Replace with the actual YouTube URL
+    download_directory = "downloads"
+    ffmpeg_path = r"ffmpeg-master-latest-win64-gpl-shared\bin\ffmpeg.exe" #replace with your ffmpeg path.
+
+    if not os.path.exists(download_directory):
+        os.makedirs(download_directory)
+
+    # Example: Download as MP3
+    mp3_result = download_video(url_to_download, download_directory, "mp3", ffmpeg_path)
+    if "success" in mp3_result:
+        logging.info(f"MP3 download successful: {mp3_result['success']}")
+        if "files_to_rename" in mp3_result:
+            for original, sanitized in mp3_result["files_to_rename"]:
+                try:
+                    os.rename(original, sanitized)
+                except Exception as e:
+                    logging.error(f"Error renaming {original} to {sanitized}: {e}")
+
+    elif "error" in mp3_result:
+        logging.error(f"MP3 download failed: {mp3_result['error']}")
+
+    # Example: Download as MP4
+    mp4_result = download_video(url_to_download, download_directory, "mp4", ffmpeg_path)
+    if "success" in mp4_result:
+        logging.info(f"MP4 download successful: {mp4_result['success']}")
+        # Serve the files to the user...
+        # ... after serving is complete:
+        if "files_to_delete" in mp4_result:
+            for file_path in mp4_result["files_to_delete"]:
+                try:
+                    os.remove(file_path)
+                except Exception as e:
+                    logging.error(f"Error deleting file {file_path}: {e}")
+    elif "error" in mp4_result:
+        logging.error(f"MP4 download failed: {mp4_result['error']}")

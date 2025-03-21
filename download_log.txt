@@ -1,0 +1,156 @@
+2025-03-12 01:14:59,425 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-12 01:14:59,425 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 01:14:59,433 - INFO -  * Restarting with stat
+2025-03-12 01:15:01,748 - WARNING -  * Debugger is active!
+2025-03-12 01:15:01,764 - INFO -  * Debugger PIN: 554-934-914
+2025-03-12 01:15:03,065 - INFO - Deleted folder due to inactivity: ./static/music\34e67a33-2d7b-444f-a9f8-1e22cfeefe30
+2025-03-12 01:15:03,065 - INFO - Deleted folder due to inactivity: ./static/music\431699ff-b3cf-417b-b653-3b2bfa0f7d54
+2025-03-12 01:15:03,081 - INFO - Deleted folder due to inactivity: ./static/music\65c0d05e-77d0-40c5-a08b-456c46253cbc
+2025-03-12 01:15:03,081 - INFO - Deleted folder due to inactivity: ./static/music\cfb9123e-4962-40c4-a520-370da9867aae
+2025-03-12 01:15:03,096 - INFO - 127.0.0.1 - - [12/Mar/2025 01:15:03] "GET / HTTP/1.1" 200 -
+2025-03-12 01:15:04,360 - INFO - 127.0.0.1 - - [12/Mar/2025 01:15:04] "[36mGET /static/images/RaCharles_HTRJ.png HTTP/1.1[0m" 304 -
+2025-03-12 01:15:04,501 - INFO - 127.0.0.1 - - [12/Mar/2025 01:15:04] "[36mGET /static/images/samsmith.jpeg HTTP/1.1[0m" 304 -
+2025-03-12 01:15:04,530 - INFO - 127.0.0.1 - - [12/Mar/2025 01:15:04] "[36mGET /static/images/1000024458_edited-removebg-preview.png HTTP/1.1[0m" 304 -
+2025-03-12 01:15:04,571 - INFO - 127.0.0.1 - - [12/Mar/2025 01:15:04] "[36mGET /static/images/kendrick_lamar_alright-700954573-large.jpg HTTP/1.1[0m" 304 -
+2025-03-12 01:15:04,589 - INFO - 127.0.0.1 - - [12/Mar/2025 01:15:04] "[36mGET /static/images/711178ded28f8078.png HTTP/1.1[0m" 304 -
+2025-03-12 01:15:04,628 - INFO - 127.0.0.1 - - [12/Mar/2025 01:15:04] "[36mGET /static/images/favicon.ico HTTP/1.1[0m" 304 -
+2025-03-12 01:15:19,481 - INFO - Starting the video download process.
+2025-03-12 01:15:19,481 - INFO - Checking if cookies need refreshing based on last modified time of cookies.txt.
+2025-03-12 01:15:19,487 - INFO - Cookies file is outdated. Refreshing cookies...
+2025-03-12 01:15:19,489 - INFO - Initializing Firefox in headless mode.
+2025-03-12 01:15:19,489 - DEBUG - Geckodriver path: geckodriver/geckodriver.exe
+2025-03-12 01:15:19,492 - DEBUG - Firefox binary path: firefox.exe
+2025-03-12 01:15:19,492 - DEBUG - Skipping Selenium Manager; path to firefox driver specified in Service class: geckodriver/geckodriver.exe
+2025-03-12 01:15:22,980 - DEBUG - Started executable: `geckodriver/geckodriver.exe` in a child process with pid: 16740 using 0 to output -3
+2025-03-12 01:15:24,088 - DEBUG - POST http://localhost:60728/session {'capabilities': {'firstMatch': [{}], 'alwaysMatch': {'browserName': 'firefox', 'acceptInsecureCerts': True, 'moz:debuggerAddress': True, 'pageLoadStrategy': <PageLoadStrategy.normal: 'normal'>, 'moz:firefoxOptions': {'binary': 'firefox.exe', 'prefs': {'remote.active-protocols': 3}}}}}
+2025-03-12 01:15:24,090 - DEBUG - Starting new HTTP connection (1): localhost:60728
+2025-03-12 01:15:26,284 - DEBUG - http://localhost:60728 "POST /session HTTP/1.1" 400 101
+2025-03-12 01:15:26,284 - DEBUG - Remote response: status=400 | data={"value":{"error":"invalid argument","message":"binary is not a Firefox executable","stacktrace":""}} | headers=HTTPHeaderDict({'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-cache', 'content-length': '101', 'date': 'Wed, 12 Mar 2025 08:15:26 GMT'})
+2025-03-12 01:15:26,284 - DEBUG - Finished Request
+2025-03-12 01:15:28,344 - INFO - 127.0.0.1 - - [12/Mar/2025 01:15:28] "[35m[1mPOST / HTTP/1.1[0m" 500 -
+2025-03-12 01:17:41,619 - INFO -  * Detected change in 'c:\\Users\\zamau\\Projects\\rngmp3\\download.py', reloading
+2025-03-12 01:17:49,249 - INFO -  * Restarting with stat
+2025-03-12 01:18:14,615 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-12 01:18:14,616 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 01:18:14,619 - INFO -  * Restarting with stat
+2025-03-12 01:18:16,883 - WARNING -  * Debugger is active!
+2025-03-12 01:18:16,900 - INFO -  * Debugger PIN: 554-934-914
+2025-03-12 01:18:30,520 - INFO -  * Detected change in 'c:\\Users\\zamau\\Projects\\rngmp3\\download.py', reloading
+2025-03-12 01:18:30,661 - INFO -  * Restarting with stat
+2025-03-12 01:18:31,701 - WARNING -  * Debugger is active!
+2025-03-12 01:18:31,710 - INFO -  * Debugger PIN: 554-934-914
+2025-03-12 01:18:38,780 - INFO - 127.0.0.1 - - [12/Mar/2025 01:18:38] "GET / HTTP/1.1" 200 -
+2025-03-12 01:18:40,264 - INFO - 127.0.0.1 - - [12/Mar/2025 01:18:40] "[36mGET /static/images/samsmith.jpeg HTTP/1.1[0m" 304 -
+2025-03-12 01:18:40,363 - INFO - 127.0.0.1 - - [12/Mar/2025 01:18:40] "[36mGET /static/images/1000024458_edited-removebg-preview.png HTTP/1.1[0m" 304 -
+2025-03-12 01:18:40,712 - INFO - 127.0.0.1 - - [12/Mar/2025 01:18:40] "[36mGET /static/images/RaCharles_HTRJ.png HTTP/1.1[0m" 304 -
+2025-03-12 01:18:40,829 - INFO - 127.0.0.1 - - [12/Mar/2025 01:18:40] "[36mGET /static/images/711178ded28f8078.png HTTP/1.1[0m" 304 -
+2025-03-12 01:18:40,869 - INFO - 127.0.0.1 - - [12/Mar/2025 01:18:40] "[36mGET /static/images/kendrick_lamar_alright-700954573-large.jpg HTTP/1.1[0m" 304 -
+2025-03-12 01:18:40,934 - INFO - 127.0.0.1 - - [12/Mar/2025 01:18:40] "[36mGET /static/images/favicon.ico HTTP/1.1[0m" 304 -
+2025-03-12 01:18:49,064 - INFO - Starting the video download process.
+2025-03-12 01:18:49,064 - INFO - Checking if cookies need refreshing based on last modified time of cookies.txt.
+2025-03-12 01:18:49,064 - INFO - Cookies file is outdated. Refreshing cookies...
+2025-03-12 01:18:49,064 - INFO - Initializing Firefox in headless mode.
+2025-03-12 01:18:49,064 - DEBUG - Geckodriver path: geckodriver/geckodriver.exe
+2025-03-12 01:18:49,064 - DEBUG - Firefox binary path: firefox.exe
+2025-03-12 01:18:49,064 - DEBUG - Skipping Selenium Manager; path to firefox driver specified in Service class: geckodriver/geckodriver.exe
+2025-03-12 01:18:49,080 - DEBUG - Started executable: `geckodriver/geckodriver.exe` in a child process with pid: 15748 using 0 to output -3
+2025-03-12 01:18:50,147 - DEBUG - POST http://localhost:60849/session {'capabilities': {'firstMatch': [{}], 'alwaysMatch': {'browserName': 'firefox', 'acceptInsecureCerts': True, 'moz:debuggerAddress': True, 'pageLoadStrategy': <PageLoadStrategy.normal: 'normal'>, 'moz:firefoxOptions': {'binary': 'firefox.exe', 'prefs': {'remote.active-protocols': 3}}}}}
+2025-03-12 01:18:50,150 - DEBUG - Starting new HTTP connection (1): localhost:60849
+2025-03-12 01:18:52,250 - DEBUG - http://localhost:60849 "POST /session HTTP/1.1" 400 101
+2025-03-12 01:18:52,258 - DEBUG - Remote response: status=400 | data={"value":{"error":"invalid argument","message":"binary is not a Firefox executable","stacktrace":""}} | headers=HTTPHeaderDict({'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-cache', 'content-length': '101', 'date': 'Wed, 12 Mar 2025 08:18:52 GMT'})
+2025-03-12 01:18:52,258 - DEBUG - Finished Request
+2025-03-12 01:18:54,297 - INFO - 127.0.0.1 - - [12/Mar/2025 01:18:54] "[35m[1mPOST / HTTP/1.1[0m" 500 -
+2025-03-12 01:20:18,401 - INFO -  * Detected change in 'c:\\Users\\zamau\\Projects\\rngmp3\\app.py', reloading
+2025-03-12 01:20:22,633 - INFO -  * Restarting with stat
+2025-03-12 01:20:24,640 - WARNING -  * Debugger is active!
+2025-03-12 01:20:24,656 - INFO -  * Debugger PIN: 554-934-914
+2025-03-12 01:20:34,755 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-12 01:20:34,755 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 01:20:34,764 - INFO -  * Restarting with stat
+2025-03-12 01:20:35,896 - WARNING -  * Debugger is active!
+2025-03-12 01:20:35,912 - INFO -  * Debugger PIN: 554-934-914
+2025-03-12 01:20:52,711 - INFO - 127.0.0.1 - - [12/Mar/2025 01:20:52] "GET / HTTP/1.1" 200 -
+2025-03-12 01:20:53,378 - INFO - 127.0.0.1 - - [12/Mar/2025 01:20:53] "[36mGET /static/images/1000024458_edited-removebg-preview.png HTTP/1.1[0m" 304 -
+2025-03-12 01:20:53,419 - INFO - 127.0.0.1 - - [12/Mar/2025 01:20:53] "[36mGET /static/images/RaCharles_HTRJ.png HTTP/1.1[0m" 304 -
+2025-03-12 01:20:53,524 - INFO - 127.0.0.1 - - [12/Mar/2025 01:20:53] "[36mGET /static/images/711178ded28f8078.png HTTP/1.1[0m" 304 -
+2025-03-12 01:20:53,585 - INFO - 127.0.0.1 - - [12/Mar/2025 01:20:53] "[36mGET /static/images/samsmith.jpeg HTTP/1.1[0m" 304 -
+2025-03-12 01:20:53,619 - INFO - 127.0.0.1 - - [12/Mar/2025 01:20:53] "[36mGET /static/images/kendrick_lamar_alright-700954573-large.jpg HTTP/1.1[0m" 304 -
+2025-03-12 01:20:53,638 - INFO - 127.0.0.1 - - [12/Mar/2025 01:20:53] "[36mGET /static/images/favicon.ico HTTP/1.1[0m" 304 -
+2025-03-12 01:21:06,332 - INFO - Deleted folder due to inactivity: ./static/music\3530ad61-5f49-4009-891d-9f489596d529
+2025-03-12 01:21:06,340 - INFO - Attempting to download video from URL: https://www.youtube.com/watch?v=lpZBwCp8rYc
+2025-03-12 01:21:06,340 - INFO - Starting the video download process.
+2025-03-12 01:21:06,340 - INFO - Checking if cookies need refreshing based on last modified time of cookies.txt.
+2025-03-12 01:21:06,348 - INFO - Cookies file is outdated. Refreshing cookies...
+2025-03-12 01:21:06,348 - INFO - Initializing Firefox in headless mode.
+2025-03-12 01:21:06,348 - DEBUG - Geckodriver path: geckodriver/geckodriver.exe
+2025-03-12 01:21:06,348 - DEBUG - Firefox binary path: firefox.exe
+2025-03-12 01:21:06,351 - DEBUG - Skipping Selenium Manager; path to firefox driver specified in Service class: geckodriver/geckodriver.exe
+2025-03-12 01:21:06,372 - DEBUG - Started executable: `geckodriver/geckodriver.exe` in a child process with pid: 18012 using 0 to output -3
+2025-03-12 01:21:07,428 - DEBUG - POST http://localhost:60911/session {'capabilities': {'firstMatch': [{}], 'alwaysMatch': {'browserName': 'firefox', 'acceptInsecureCerts': True, 'moz:debuggerAddress': True, 'pageLoadStrategy': <PageLoadStrategy.normal: 'normal'>, 'moz:firefoxOptions': {'binary': 'firefox.exe', 'prefs': {'remote.active-protocols': 3}}}}}
+2025-03-12 01:21:07,428 - DEBUG - Starting new HTTP connection (1): localhost:60911
+2025-03-12 01:21:09,596 - DEBUG - http://localhost:60911 "POST /session HTTP/1.1" 400 101
+2025-03-12 01:21:09,596 - DEBUG - Remote response: status=400 | data={"value":{"error":"invalid argument","message":"binary is not a Firefox executable","stacktrace":""}} | headers=HTTPHeaderDict({'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-cache', 'content-length': '101', 'date': 'Wed, 12 Mar 2025 08:21:09 GMT'})
+2025-03-12 01:21:09,596 - DEBUG - Finished Request
+2025-03-12 01:21:11,940 - ERROR - Download failed: Message: binary is not a Firefox executable
+
+2025-03-12 01:21:11,940 - INFO - 127.0.0.1 - - [12/Mar/2025 01:21:11] "[35m[1mPOST / HTTP/1.1[0m" 500 -
+2025-03-12 01:24:05,437 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-12 01:24:05,437 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 01:24:05,446 - INFO -  * Restarting with stat
+2025-03-12 01:24:12,490 - WARNING -  * Debugger is active!
+2025-03-12 01:24:12,525 - INFO -  * Debugger PIN: 554-934-914
+2025-03-12 01:24:51,275 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-12 01:24:51,280 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 01:24:51,280 - INFO -  * Restarting with stat
+2025-03-12 01:24:52,420 - WARNING -  * Debugger is active!
+2025-03-12 01:24:52,435 - INFO -  * Debugger PIN: 554-934-914
+2025-03-12 01:25:01,010 - INFO - Deleted folder due to inactivity: ./static/music\1f06f12d-a0ce-46c7-8fc1-6a804ef4abe2
+2025-03-12 01:25:01,010 - INFO - Deleted folder due to inactivity: ./static/music\346d3a80-30c2-4c47-8825-66a1c3aae805
+2025-03-12 01:25:01,020 - INFO - Deleted folder due to inactivity: ./static/music\ea02b2fb-3733-452b-8820-7c819e054be4
+2025-03-12 01:25:01,042 - INFO - 127.0.0.1 - - [12/Mar/2025 01:25:01] "GET / HTTP/1.1" 200 -
+2025-03-12 01:25:03,260 - INFO - 127.0.0.1 - - [12/Mar/2025 01:25:03] "[36mGET /static/images/1000024458_edited-removebg-preview.png HTTP/1.1[0m" 304 -
+2025-03-12 01:25:03,355 - INFO - 127.0.0.1 - - [12/Mar/2025 01:25:03] "[36mGET /static/images/kendrick_lamar_alright-700954573-large.jpg HTTP/1.1[0m" 304 -
+2025-03-12 01:25:03,413 - INFO - 127.0.0.1 - - [12/Mar/2025 01:25:03] "[36mGET /static/images/RaCharles_HTRJ.png HTTP/1.1[0m" 304 -
+2025-03-12 01:25:03,610 - INFO - 127.0.0.1 - - [12/Mar/2025 01:25:03] "[36mGET /static/images/711178ded28f8078.png HTTP/1.1[0m" 304 -
+2025-03-12 01:25:03,674 - INFO - 127.0.0.1 - - [12/Mar/2025 01:25:03] "[36mGET /static/images/samsmith.jpeg HTTP/1.1[0m" 304 -
+2025-03-12 01:25:03,731 - INFO - 127.0.0.1 - - [12/Mar/2025 01:25:03] "[36mGET /static/images/favicon.ico HTTP/1.1[0m" 304 -
+2025-03-12 01:25:08,495 - INFO - Attempting to download video from URL: https://www.youtube.com/watch?v=lpZBwCp8rYc
+2025-03-12 01:25:08,495 - INFO - Starting the video download process.
+2025-03-12 01:25:08,495 - INFO - Checking if cookies need refreshing based on last modified time of cookies.txt.
+2025-03-12 01:25:08,495 - INFO - Cookies file is outdated. Refreshing cookies...
+2025-03-12 01:25:08,495 - INFO - Initializing Firefox in headless mode.
+2025-03-12 01:25:08,495 - DEBUG - Geckodriver path: geckodriver/geckodriver.exe
+2025-03-12 01:25:08,495 - DEBUG - Firefox binary path: firefox.exe
+2025-03-12 01:25:08,495 - DEBUG - Skipping Selenium Manager; path to firefox driver specified in Service class: geckodriver/geckodriver.exe
+2025-03-12 01:25:08,520 - DEBUG - Started executable: `geckodriver/geckodriver.exe` in a child process with pid: 17400 using 0 to output -3
+2025-03-12 01:25:09,565 - DEBUG - POST http://localhost:61072/session {'capabilities': {'firstMatch': [{}], 'alwaysMatch': {'browserName': 'firefox', 'acceptInsecureCerts': True, 'moz:debuggerAddress': True, 'pageLoadStrategy': <PageLoadStrategy.normal: 'normal'>, 'moz:firefoxOptions': {'binary': 'firefox.exe', 'prefs': {'remote.active-protocols': 3}}}}}
+2025-03-12 01:25:09,565 - DEBUG - Starting new HTTP connection (1): localhost:61072
+2025-03-12 01:25:11,661 - DEBUG - http://localhost:61072 "POST /session HTTP/1.1" 400 101
+2025-03-12 01:25:11,661 - DEBUG - Remote response: status=400 | data={"value":{"error":"invalid argument","message":"binary is not a Firefox executable","stacktrace":""}} | headers=HTTPHeaderDict({'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-cache', 'content-length': '101', 'date': 'Wed, 12 Mar 2025 08:25:11 GMT'})
+2025-03-12 01:25:11,661 - DEBUG - Finished Request
+2025-03-12 01:25:13,688 - ERROR - Download failed: Message: binary is not a Firefox executable
+
+2025-03-12 01:25:13,688 - INFO - 127.0.0.1 - - [12/Mar/2025 01:25:13] "[35m[1mPOST / HTTP/1.1[0m" 500 -
+2025-03-12 01:26:36,480 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-12 01:26:36,485 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 01:26:36,500 - INFO -  * Restarting with stat
+2025-03-12 01:26:41,323 - WARNING -  * Debugger is active!
+2025-03-12 01:26:41,340 - INFO -  * Debugger PIN: 554-934-914
+2025-03-12 01:28:27,225 - INFO -  * Detected change in 'c:\\Users\\zamau\\Projects\\rngmp3\\download.py', reloading
+2025-03-12 01:28:27,545 - INFO -  * Restarting with stat
+2025-03-12 01:28:31,159 - WARNING -  * Debugger is active!
+2025-03-12 01:28:31,311 - INFO -  * Debugger PIN: 554-934-914
+2025-03-12 01:28:40,036 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-12 01:28:40,036 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 01:28:40,036 - INFO -  * Restarting with stat
+2025-03-12 01:28:41,695 - WARNING -  * Debugger is active!
+2025-03-12 01:28:41,720 - INFO -  * Debugger PIN: 554-934-914
+2025-03-12 01:29:27,225 - INFO -  * Detected change in 'c:\\Users\\zamau\\Projects\\rngmp3\\download.py', reloading
+2025-03-12 01:29:27,517 - INFO -  * Restarting with stat

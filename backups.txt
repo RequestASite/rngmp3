@@ -1,0 +1,1799 @@
+CONTAINS:
+index.html
+index_mobile.html
+faq.html
+faq_mobile.html
+download.py
+app.py
+
+
+
+
+
+//index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RNGMP3 - The #1 YouTube Playlist Downloader</title>
+  <meta name="description" content="Download YouTube videos and playlists as MP3 or MP4 files easily and for free. No ads - great for music downloading">
+
+  <!-- Link to the favicon image -->
+  <link id="favicon" rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #4F6175;
+      color: white;
+      font-family: 'Quicksand', sans-serif;
+      padding-top: 10px;
+      text-align: center;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    /* Contact Support Button */
+    .contact-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 8px 15px;
+      background-color: #ffcc00;
+      color: black;
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 5px;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    .contact-button:hover {
+      background-color: #e6b800;
+    }
+
+    /* FAQ Button at Top Right */
+    .faq-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 8px 15px;
+      background-color: #00ccff;
+      color: black;
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 5px;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    .faq-button:hover {
+      background-color: #0099cc;
+    }
+
+    .site-logo {
+      display: block;
+      margin: 0 auto;
+      max-width: 30%;
+      height: auto;
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+
+    .small-text {
+      font-size: 20px;
+      font-weight: 300;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      padding-bottom: 9%;
+    }
+
+    form {
+      margin: -10px auto;
+      width: 80%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #6C8EBF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #5576a3;
+    }
+
+    .info-text {
+      margin-top: 10px;
+      font-size: 20px;
+    }
+
+    .donate-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #b40101;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      font-family: 'Quicksand', sans-serif;
+      cursor: pointer;
+      text-align: center;
+      max-width: 300px;
+      margin-top: 20px;
+    }
+
+    .donate-button:hover {
+      background-color: #d82222;
+    }
+
+    .donate-button a {
+      text-decoration: none;
+      color: white;
+    }
+
+    /* Upcoming Features Section */
+    .upcoming-features {
+      background-color: #354a58;
+      color: white;
+      padding: 30px 0;
+      margin-top: 40px;
+    }
+
+    .upcoming-features h2 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .feature-list {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .feature-item {
+      max-width: 250px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-item h3 {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .feature-item p {
+      font-size: 16px;
+      font-weight: 300;
+    }
+
+    /* My Favorite Songs Section */
+    .favorite-songs {
+      background-color: #354a58;
+      color: white;
+      padding: 30px 0;
+      margin-top: 40px;
+    }
+
+    .favorite-songs h2 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .song-list {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .song-item {
+      max-width: 250px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .song-thumbnail {
+      width: 150px; /* Adjust width */
+      height: 100px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .song-item p {
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 5px;
+      color: white;
+    }
+
+    .song-item a {
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .song-item a:hover {
+      text-decoration: underline;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Contact Support Button -->
+  <a href="mailto:rngmp3@gmail.com" class="contact-button">Contact Support</a>
+
+  <!-- FAQ Button -->
+  <a href="{{ url_for('faq') }}" class="faq-button">FAQ</a>
+
+  <img src="{{ url_for('static', filename='images/1000024458_edited-removebg-preview.png') }}" 
+  alt="Site Logo" class="site-logo">
+
+  <p class="small-text">
+    Music Playlist Downloader - Fast and Easy
+  </p>
+
+  <form id="download-form" method="post">
+    <input type="text" id="url" name="url" placeholder="Enter YouTube URL" required>
+
+    <!-- Separate buttons for MP3 and MP4 -->
+    <button type="button" id="download-mp3">Download Playlist as Audios (MP3)</button>
+    <button type="button" id="download-mp4">Download Playlist as Videos (MP4)</button>
+
+    <p class="info-text">
+      Enter the link to a YouTube playlist or video, and select the button that matches how you want it downloaded.
+      Note that Privated content can't be downloaded, and that playlists may take a few minutes to download - make sure to leave the tab open!
+      Consider leaving a donation if you like the site!
+    </p>
+  </form>
+
+  <a href="https://ko-fi.com/rngmp3" target="_blank">
+    <button class="donate-button">DONATE</button>
+  </a>
+
+  <!-- Upcoming Features Section -->
+  <div class="upcoming-features">
+    <h2>Upcoming Features</h2>
+    <div class="feature-list">
+      <div class="feature-item">
+        <h3>Faster Downloads</h3>
+        <p>Improving download speed for larger playlists.</p>
+      </div>
+      <div class="feature-item">
+        <h3>Spotify Support</h3>
+        <p>You'll be able to download playlists from Spotify too!</p>
+      </div>
+      <div class="feature-item">
+        <h3>Playlist And Channel Monitoring</h3>
+        <p>New videos uploaded to a channel or playlist will be sent to you automatically.</p>
+      </div>
+      <div class="feature-item">
+        <h3>Song of The Day </h3>
+        <p>We'll have a new song on the front page every day! </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Favorite Songs Section -->
+  <div class="favorite-songs">
+    <h2>Try A Song!</h2>
+    <div class="song-list">
+      <div class="song-item">
+        <a href="https://www.youtube.com/watch?v=uSiHqxgE2d0" target="_blank">
+          <img src="static/images/RaCharles_HTRJ.png" alt="Hit The Road Jack - Ray Charles" class="song-thumbnail">
+          <p>Hit The Road Jack - Ray Charles</p>
+        </a>
+      </div>
+      <div class="song-item">
+        <a href="https://www.youtube.com/watch?v=pB-5XG-DbAA&list=OLAK5uy_mO8nTkN8cjD0i9lgLls1fZYvbQkQdOYjc" target="_blank">
+          <img src="static/images/samsmith.jpeg" alt="Stay With Me - Sam Smith" class="song-thumbnail">
+          <p>Stay With Me - Sam Smith</p>
+        </a>
+      </div>
+      <div class="song-item">
+        <a href="https://www.youtube.com/watch?v=1Al-nuR1iAU" target="_blank">
+          <img src="static/images/711178ded28f8078.png" alt="Skin - Rag'n'Bone Man" class="song-thumbnail">
+          <p>Skin - Rag'n'Bone Man</p>
+        </a>
+      </div>
+      <div class="song-item">
+        <a href="https://www.youtube.com/watch?v=j3nYx9Hx-Os" target="_blank">
+          <img src="static/images/kendrick_lamar_alright-700954573-large.jpg" alt="Alright - Kendrick Lamar" class="song-thumbnail">
+          <p>Alright - Kendrick Lamar</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+<script>
+document.getElementById('download-mp3').addEventListener('click', function () {
+  startDownload('mp3', this);
+});
+
+document.getElementById('download-mp4').addEventListener('click', function () {
+  startDownload('mp4', this);
+});
+
+async function startDownload(format, button) {
+  const urlValue = document.getElementById('url').value;
+  if (!urlValue) {
+    alert("Please enter a YouTube URL.");
+    return;
+  }
+
+  // Start the loading dots effect
+  let dotCount = 0;
+  let dotsInterval = setInterval(() => {
+    document.title = "Downloading" + '.'.repeat(dotCount);
+    dotCount = (dotCount + 1) % 4; // Cycle from 0 to 3 dots
+  }, 500); // Update every 500ms
+
+  button.textContent = 'Downloading...';
+  button.disabled = true;
+
+  const formData = new URLSearchParams();
+  formData.append('url', urlValue);
+  formData.append('format', format);
+
+  try {
+    const response = await fetch('/', {
+      method: 'POST',
+      body: formData,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    });
+
+    const data = await response.json();
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+
+    document.cookie = `downloaded_files=${JSON.stringify(data)}; path=/;`;
+
+    for (const fileName of data) {
+      const decodedFileName = decodeURIComponent(fileName);
+      const link = document.createElement('a');
+      link.href = `/static/music/${decodedFileName}`;
+      link.download = decodedFileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    setTimeout(async () => {
+      await fetch('/clear_files', { method: 'POST' });
+    }, 5000);
+
+    button.textContent = 'Download Completed';
+    button.disabled = false;
+
+  } catch (error) {
+    console.error('Error:', error);
+    alert("An error occurred.");
+    button.textContent = 'Download Failed';
+    button.disabled = false;
+
+  } finally {
+    // Stop the loading dots effect and reset the title
+    clearInterval(dotsInterval);
+    document.title = "Download MP3 Files";
+  }
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//index_mobile.html
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>RNGMP3 - The #1 YouTube Playlist Downloader</title>
+    <meta name="description" content="Download YouTube videos and playlists as MP3 or MP4 files easily and for free. No ads - great for music downloading">
+    <link id="favicon" rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #4F6175;
+            color: white;
+            font-family: 'Quicksand', sans-serif;
+            padding-top: 10px;
+            text-align: center;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .site-logo {
+            display: block;
+            margin: 10px auto;
+            max-width: 98%;
+            height: 170px;
+        }
+
+        .small-text {
+            font-size: 28px;
+            font-weight: 400;
+            margin-top: 40px;
+            margin-bottom: 50px;
+        }
+
+        .input-container {
+            margin: 50px auto;
+            width: 95%;
+            max-width: 800px;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        input {
+            padding: 30px;
+            margin: 20px 0;
+            margin-left: -20px;
+            width: 100%;
+            font-size: 36px;
+            border: none;
+            border-radius: 15px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column; /* Stack buttons vertically */
+            align-items: center; /* Center buttons horizontally */
+            margin: 20px auto;
+            width: 95%;
+            max-width: 800px;
+        }
+
+        button {
+            padding: 30px 50px;
+            font-size: 42px; /* Increased font size */
+            border: none;
+            border-radius: 15px;
+            background-color: #6C8EBF;
+            color: white;
+            cursor: pointer;
+            margin: 10px 0; /* Space between stacked buttons */
+            width: 100%; /* Make buttons full width */
+        }
+
+        button:hover {
+            background-color: #5576a3;
+        }
+
+        .donate-button {
+            display: inline-block;
+            padding: 30px 50px;
+            background-color: #b40101;
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            font-family: 'Quicksand', sans-serif;
+            cursor: pointer;
+            text-align: center;
+            max-width: 600px;
+            margin: 60px auto;
+            margin-bottom: 10px;
+
+        }
+
+        .donate-button:hover {
+            background-color: #d82222;
+        }
+
+        .donate-button a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .contact-button,
+        .faq-button {
+            display: inline-block;
+            padding: 35px 60px;
+            background-color: #ffcc00;
+            color: black;
+            font-size: 36px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 15px;
+            font-family: 'Quicksand', sans-serif;
+            margin: 10px 10px;
+        }
+
+        .contact-button {
+            background-color: #ffcc00;
+        }
+
+        .faq-button {
+            background-color: #00ccff;
+        }
+
+        .contact-button:hover {
+            background-color: #e6b800;
+        }
+
+        .faq-button:hover {
+            background-color: #0099cc;
+        }
+
+        .footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        /* Try A Song Section */
+        .favorite-songs {
+            margin-top: 80px;
+            margin-bottom: 80px;
+        }
+
+        .favorite-songs h2 {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+                .song-list {
+            flex-direction: column;
+            align-items: center; /* Align items to the start (left) */
+            width: 100%; /* Take full width of parent */
+        }
+
+        .song-item {
+            width: 100%; /* Song item should take full width */
+            text-align: left; /* Align text to the left */
+            padding-right: 105px; /* Add some left padding for visual spacing */
+        }
+
+        .song-item a {
+            font-size: 48px;
+            padding: 30px 60px;
+            width: 95%; /* Reduce width slightly */
+            margin: 10px auto;
+            display: block;
+            background-color: #6C8EBF;
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+        }
+
+        .song-item a:hover {
+            background-color: #5576a3;
+        }
+
+        .info-text {
+            margin-top: 20px;
+            font-size: 24px;
+            line-height: 1.6;
+        }
+
+        .upcoming-features,
+        .favorite-songs {
+            background-color: #354a58;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+
+        .upcoming-features h2,
+        .favorite-songs h2 {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .feature-list,
+        .song-list {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+
+        .feature-item,
+        .song-item {
+            max-width: 300px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .feature-item h3,
+        .song-item p {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .feature-item p {
+            font-size: 18px;
+            font-weight: 300;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <img src="{{ url_for('static', filename='images/1000024458_edited-removebg-preview.png') }}" alt="Site Logo"
+        class="site-logo">
+
+    <p class="small-text">
+        Music Playlist Downloader - Fast and Easy
+    </p>
+
+    <div class="input-container">
+        <input type="text" id="url" name="url" placeholder="Enter YouTube URL" required>
+    </div>
+
+    <div class="button-container">
+        <button type="button" id="download-mp3">Download Playlist as Audios (MP3)</button>
+        <button type="button" id="download-mp4">Download Playlist as Videos (MP4)</button>
+    </div>
+
+    <p class="info-text">
+        Enter the link to a YouTube playlist or video, and select the button that matches how you want it downloaded.
+        Note that Privated content can't be downloaded, and that playlists may take a few minutes to download - make sure to leave the tab open!
+        Consider leaving a donation if you like the site!
+    </p>
+
+    <a href="https://ko-fi.com/rngmp3" target="_blank">
+        <button class="donate-button">DONATE</button>
+    </a>
+
+    <div class="footer">
+        <a href="mailto:rngmp3@gmail.com" class="contact-button">Contact Support</a>
+        <a href="{{ url_for('faq') }}" class="faq-button">FAQ</a>
+    </div>
+
+    <div class="upcoming-features">
+        <h2>Upcoming Features</h2>
+        <div class="feature-list">
+            <div class="feature-item">
+                <h3>Faster Downloads</h3>
+                <p>Improving download speed for larger playlists.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Spotify Support</h3>
+                <p>You'll be able to download playlists from Spotify too!</p>
+            </div>
+            <div class="feature-item">
+                <h3>Playlist And Channel Monitoring</h3>
+                <p>New videos uploaded to a channel or playlist will be sent to you automatically.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Song of The Day </h3>
+                <p>We'll have a new song on the front page every day! </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="favorite-songs">
+        <h2>Try A Song!</h2>
+        <div class="song-list">
+            <div class="song-item">
+                <a href="https://www.youtube.com/watch?v=uSiHqxgE2d0" target="_blank">
+                    Hit The Road Jack - Ray Charles
+                </a>
+            </div>
+            <div class="song-item">
+                <a href="https://www.youtube.com/watch?v=pB-5XG-DbAA&list=OLAK5uy_mO8nTkN8cjD0i9lgLls1fZYvbQkQdOYjc" target="_blank">
+                    Stay With Me - Sam Smith
+                </a>
+            </div>
+            <div class="song-item">
+                <a href="https://www.youtube.com/watch?v=1Al-nuR1iAU" target="_blank">
+                    Skin - Rag'n'Bone Man
+                </a>
+            </div>
+            <div class="song-item">
+                <a href="https://www.youtube.com/watch?v=j3nYx9Hx-Os" target="_blank">
+                    Alright - Kendrick Lamar
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.getElementById('download-mp3').addEventListener('click', function () {
+          startDownload('mp3', this);
+        });
+        
+        document.getElementById('download-mp4').addEventListener('click', function () {
+          startDownload('mp4', this);
+        });
+        
+        async function startDownload(format, button) {
+          const urlValue = document.getElementById('url').value;
+          if (!urlValue) {
+            alert("Please enter a YouTube URL.");
+            return;
+          }
+        
+          // Start the loading dots effect
+          let dotCount = 0;
+          let dotsInterval = setInterval(() => {
+            document.title = "Downloading" + '.'.repeat(dotCount);
+            dotCount = (dotCount + 1) % 4; // Cycle from 0 to 3 dots
+          }, 500); // Update every 500ms
+        
+          button.textContent = 'Downloading...';
+          button.disabled = true;
+        
+          const formData = new URLSearchParams();
+          formData.append('url', urlValue);
+          formData.append('format', format);
+        
+          try {
+            const response = await fetch('/', {
+              method: 'POST',
+              body: formData,
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            });
+        
+            const data = await response.json();
+            if (data.error) {
+              alert(data.error);
+              return;
+            }
+        
+            document.cookie = `downloaded_files=${JSON.stringify(data)}; path=/;`;
+        
+            for (const fileName of data) {
+              const decodedFileName = decodeURIComponent(fileName);
+              const link = document.createElement('a');
+              link.href = `/static/music/${decodedFileName}`;
+              link.download = decodedFileName;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            }
+        
+            setTimeout(async () => {
+              await fetch('/clear_files', { method: 'POST' });
+            }, 5000);
+        
+            button.textContent = 'Download Completed';
+            button.disabled = false;
+        
+          } catch (error) {
+            console.error('Error:', error);
+            alert("An error occurred.");
+            button.textContent = 'Download Failed';
+            button.disabled = false;
+        
+          } finally {
+            // Stop the loading dots effect and reset the title
+            clearInterval(dotsInterval);
+            document.title = "Download MP3 Files";
+          }
+        }
+        </script>
+        
+        </body>
+        </html>
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+//faq.html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Download MP3 Files</title>
+    <link id="favicon" rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #4F6175;
+            color: white;
+            font-family: 'Quicksand', sans-serif;
+            padding-top: 10px;
+            text-align: center;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .contact-button, .faq-button {
+            position: absolute;
+            top: 10px;
+            padding: 12px 20px; /* Larger padding */
+            background-color: #ffcc00;
+            color: black;
+            font-size: 18px; /* Larger font size */
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 8px; /* Larger border radius */
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .contact-button {
+            left: 10px;
+            background-color: #ffcc00;
+        }
+
+        .faq-button {
+            right: 10px;
+            background-color: #00ccff;
+        }
+
+        .contact-button:hover {
+            background-color: #e6b800;
+        }
+
+        .faq-button:hover {
+            background-color: #0099cc;
+        }
+
+        .site-logo {
+            display: block;
+            margin: 20px auto; /* Increased margin */
+            max-width: 80%; /* Much larger logo */
+            height: auto;
+        }
+
+        .small-text {
+            font-size: 28px; /* Larger font size */
+            font-weight: 400; /* Slightly bolder */
+            margin-top: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 5%; /* Adjusted padding */
+        }
+
+        form {
+            margin: -10px auto;
+            width: 90%; /* Wider form */
+            max-width: 800px; /* Increased max width */
+            text-align: center;
+        }
+
+        input, button {
+            padding: 15px; /* Larger padding */
+            margin: 10px 0; /* Increased margin */
+            width: 100%;
+            font-size: 18px; /* Larger font size */
+            border: none;
+            border-radius: 8px; /* Larger border radius */
+        }
+
+        button {
+            background-color: #6C8EBF;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #5576a3;
+        }
+
+        .info-text {
+            margin-top: 20px; /* Increased margin */
+            font-size: 22px; /* Larger font size */
+            line-height: 1.6; /* Increased line height for readability */
+        }
+
+        .donate-button {
+            display: inline-block;
+            padding: 15px 30px; /* Larger padding */
+            background-color: #b40101;
+            color: white;
+            font-size: 18px; /* Larger font size */
+            font-weight: bold;
+            border: none;
+            border-radius: 8px; /* Larger border radius */
+            font-family: 'Quicksand', sans-serif;
+            cursor: pointer;
+            text-align: center;
+            max-width: 400px; /* Increased max width */
+            margin-top: 30px; /* Increased margin */
+        }
+
+        .donate-button:hover {
+            background-color: #d82222;
+        }
+
+        .donate-button a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .upcoming-features, .favorite-songs {
+            background-color: #354a58;
+            color: white;
+            padding: 40px 0; /* Increased padding */
+            margin-top: 50px; /* Increased margin */
+        }
+
+        .upcoming-features h2, .favorite-songs h2 {
+            font-size: 30px; /* Larger font size */
+            font-weight: bold;
+            margin-bottom: 30px; /* Increased margin */
+        }
+
+        .feature-list, .song-list {
+            display: flex;
+            justify-content: center;
+            gap: 50px; /* Increased gap */
+            flex-wrap: wrap;
+        }
+
+        .feature-item, .song-item {
+            max-width: 300px; /* Increased max width */
+            text-align: center;
+            margin-bottom: 30px; /* Increased margin */
+        }
+
+        .feature-item h3, .song-item p {
+            font-size: 24px; /* Larger font size */
+            font-weight: bold;
+        }
+
+        .feature-item p {
+            font-size: 18px; /* Larger font size */
+            font-weight: 300;
+        }
+
+        .song-thumbnail {
+            width: 200px; /* Increased width */
+            height: 150px; /* Increased height */
+            border-radius: 10px; /* Larger border radius */
+            margin-bottom: 10px; /* Increased margin */
+        }
+    </style>
+</head>
+<body>
+
+  <!-- Contact Support Button -->
+  <a href="mailto:rngmp3@gmail.com" class="contact-button">Contact Support</a>
+
+  <!-- FAQ Button -->
+  <a href="{{ url_for('faq') }}" class="faq-button">FAQ</a>
+
+  <img src="{{ url_for('static', filename='images/1000024458_edited-removebg-preview.png') }}" 
+  alt="Site Logo" class="site-logo">
+
+  <p class="small-text">
+    Music Playlist Downloader - Fast and Easy
+  </p>
+
+  <form id="download-form" method="post">
+    <input type="text" id="url" name="url" placeholder="Enter YouTube URL" required>
+
+    <!-- Separate buttons for MP3 and MP4 -->
+    <button type="button" id="download-mp3">Download Playlist as Audios (MP3)</button>
+    <button type="button" id="download-mp4">Download Playlist as Videos (MP4)</button>
+
+    <p class="info-text">
+      Enter the link to a YouTube playlist or video of your choosing, and select the button that matches how you want it downloaded. 
+      From there, simply sit back, wait for the download process to finish, and enjoy! 
+      Note that the playlist needs to be set to "Public" for you to download it, and the longer it is, the longer the process will take - you may need to wait for a bit!
+      
+      Consider leaving a donation if you like the site!
+    </p>
+  </form>
+
+  <a href="https://ko-fi.com/rngmp3" target="_blank">
+    <button class="donate-button">DONATE</button>
+  </a>
+
+  <!-- Upcoming Features Section -->
+  <div class="upcoming-features">
+    <h2>Upcoming Features</h2>
+    <div class="feature-list">
+      <div class="feature-item">
+        <h3>Faster Downloads</h3>
+        <p>Improving download speed for larger playlists.</p>
+      </div>
+      <div class="feature-item">
+        <h3>Spotify Support</h3>
+        <p>You'll be able to download playlists from Spotify too!</p>
+      </div>
+      <div class="feature-item">
+        <h3>Playlist And Channel Monitoring</h3>
+        <p>New videos uploaded to a channel or playlist will be sent to you automatically.</p>
+      </div>
+      <div class="feature-item">
+        <h3>Song of The Day </h3>
+        <p>We'll have a new song on the front page every day! </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Favorite Songs Section -->
+  <div class="favorite-songs">
+    <h2>Try A Song!</h2>
+    <div class="song-list">
+      <div class="song-item">
+        <a href="https://www.youtube.com/watch?v=uSiHqxgE2d0" target="_blank">
+          <img src="static/images/RaCharles_HTRJ.png" alt="Hit The Road Jack - Ray Charles" class="song-thumbnail">
+          <p>Hit The Road Jack - Ray Charles</p>
+        </a>
+      </div>
+      <div class="song-item">
+        <a href="https://www.youtube.com/watch?v=pB-5XG-DbAA&list=OLAK5uy_mO8nTkN8cjD0i9lgLls1fZYvbQkQdOYjc" target="_blank">
+          <img src="static/images/samsmith.jpeg" alt="Stay With Me - Sam Smith" class="song-thumbnail">
+          <p>Stay With Me - Sam Smith</p>
+        </a>
+      </div>
+      <div class="song-item">
+        <a href="https://www.youtube.com/watch?v=1Al-nuR1iAU" target="_blank">
+          <img src="static/images/711178ded28f8078.png" alt="Skin - Rag'n'Bone Man" class="song-thumbnail">
+          <p>Skin - Rag'n'Bone Man</p>
+        </a>
+      </div>
+      <div class="song-item">
+        <a href="https://www.youtube.com/watch?v=j3nYx9Hx-Os" target="_blank">
+          <img src="static/images/kendrick_lamar_alright-700954573-large.jpg" alt="Alright - Kendrick Lamar" class="song-thumbnail">
+          <p>Alright - Kendrick Lamar</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+<script>
+document.getElementById('download-mp3').addEventListener('click', function () {
+  startDownload('mp3', this);
+});
+
+document.getElementById('download-mp4').addEventListener('click', function () {
+  startDownload('mp4', this);
+});
+
+async function startDownload(format, button) {
+  const urlValue = document.getElementById('url').value;
+  if (!urlValue) {
+    alert("Please enter a YouTube URL.");
+    return;
+  }
+
+  // Start the loading dots effect
+  let dotCount = 0;
+  let dotsInterval = setInterval(() => {
+    document.title = "Downloading" + '.'.repeat(dotCount);
+    dotCount = (dotCount + 1) % 4; // Cycle from 0 to 3 dots
+  }, 500); // Update every 500ms
+
+  button.textContent = 'Downloading...';
+  button.disabled = true;
+
+  const formData = new URLSearchParams();
+  formData.append('url', urlValue);
+  formData.append('format', format);
+
+  try {
+    const response = await fetch('/', {
+      method: 'POST',
+      body: formData,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    });
+
+    const data = await response.json();
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+
+    document.cookie = `downloaded_files=${JSON.stringify(data)}; path=/;`;
+
+    for (const fileName of data) {
+      const decodedFileName = decodeURIComponent(fileName);
+      const link = document.createElement('a');
+      link.href = `/static/music/${decodedFileName}`;
+      link.download = decodedFileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    setTimeout(async () => {
+      await fetch('/clear_files', { method: 'POST' });
+    }, 5000);
+
+    button.textContent = 'Download Completed';
+    button.disabled = false;
+
+  } catch (error) {
+    console.error('Error:', error);
+    alert("An error occurred.");
+    button.textContent = 'Download Failed';
+    button.disabled = false;
+
+  } finally {
+    // Stop the loading dots effect and reset the title
+    clearInterval(dotsInterval);
+    document.title = "Download MP3 Files";
+  }
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+//faq_mobile.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FAQ - Music Playlist Downloader</title>
+  
+  <!-- Link to the favicon image -->
+  <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #4F6175;
+      color: white;
+      font-family: 'Quicksand', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .faq-container {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: left;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    .faq-item {
+      margin-bottom: 15px;
+    }
+
+    .faq-question {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    .faq-answer {
+      font-size: 18px;
+      margin-left: 20px;
+    }
+
+    .back-button {
+    display: inline-block;
+    margin-top: 30px; /* Increased margin for more space */
+    padding: 20px 40px; /* Increased padding */
+    background-color: #6C8EBF;
+    color: white;
+    font-size: 50px; /* Increased font size */
+    border: none;
+    border-radius: 10px; /* Slightly larger border radius */
+    cursor: pointer;
+}
+
+    .back-button:hover {
+      background-color: #5576a3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Frequently Asked Questions (FAQ)</h1>
+
+  <div class="faq-container">
+    <div class="faq-item">
+      <p class="faq-question">Q: Can this download Spotify playlists too?</p>
+      <p class="faq-answer">A: At the moment, it only supports YouTube. But support for Spotify is actively in the works!</p>
+    </div>
+
+
+    <div class="faq-item">
+      <p class="faq-question">Q: Why are some videos in my playlists downloading, but not others? </p>
+      <p class="faq-answer">A: Due to the way YouTube works, we may not be able to download certain types of videos, especially those that are age restricted. Support for these kinds of videos will be added in future updates</p>
+    </div>
+    
+    <div class="faq-item">
+      <p class="faq-question">Q: Why is the download taking so long?</p>
+      <p class="faq-answer">A: The length of the playlist and the file size can affect the download time. Larger playlists will  take longer to process.</p>
+    </div>
+    
+    <div class="faq-item">
+      <p class="faq-question">Q: What should I do if I encounter an error?</p>
+      <p class="faq-answer">A: Most errors will be a result of  an invalid link (i.e a link that isn't for YouTube), or if you're trying to download a video that's restricted. If you face any issues, feel free to contact us via the "Contact Support" button at the top left corner of the website.</p>
+    </div>
+
+
+    <div class="faq-item">
+        <p class="faq-question">Q: Why do I have to download each file individually? This is taking a long time!</p>
+        <p class="faq-answer">A: When using the downloader for the first time, it will ask for permission to download multiple files at once. If you don't allow this, you will have to download each file individually. However, you can reset this by wiping your browser's cache - that will make the browser forget the settings for this site, and allow the site to ask you for permission to download multiple files another time. </p>
+      </div>
+
+    <div class="faq-item">
+      <p class="faq-question">Q: Is there a way to support the site?</p>
+      <p class="faq-answer">A: Yes! If you enjoy the service, consider supporting us through a donation. Just click the "DONATE" button on the main page.</p>
+    </div>
+
+    <a href="/" class="back-button">Back to Home</a>
+  </div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+//download.py 
+import os
+import subprocess
+from playwright.sync_api import sync_playwright
+import logging
+import time
+import urllib.parse
+import glob
+import re  # Import the regular expression module
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+cookies_file = "cookies.txt"
+youtube_url = "https://www.youtube.com"  # URL to check if cookies are valid
+
+def convert_to_netscape(input_file, output_file):
+    try:
+        with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
+            outfile.write("# Netscape HTTP Cookie File\n")
+            for line in infile:
+                parts = line.strip().split('\t')
+                if len(parts) == 6:
+                    name, domain, path, secure, expiry, value = parts
+                    outfile.write(f"{domain}\tTRUE\t{path}\t{secure}\t{expiry}\t{name}\t{value}\n")
+        logging.info(f"Cookies converted to Netscape format: {output_file}")
+    except Exception as e:
+        logging.error(f"Error converting cookies: {e}")
+
+def load_cookies(context, cookies_file):
+    if os.path.exists(cookies_file):
+        with open(cookies_file, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if not line.startswith("#"):
+                    parts = line.split("\t")
+                    if len(parts) == 7:
+                        cookie = {}
+                        cookie['domain'] = parts[0]
+                        cookie['httpOnly'] = True if parts[1].upper() == "TRUE" else False
+                        cookie['path'] = parts[2]
+                        cookie['secure'] = True if parts[3].upper() == "TRUE" else False
+                        try:
+                            cookie['expires'] = int(float(parts[4])) if parts[4] else None
+                        except ValueError:
+                            logging.error(f"Invalid expires value: {parts[4]}")
+                            cookie['expires'] = None
+                        cookie['name'] = parts[5]
+                        cookie['value'] = parts[6]
+                        context.add_cookies([cookie])
+
+def save_cookies(page, cookies_file):
+    cookies = page.context.cookies()
+    with open(cookies_file, 'w') as f:
+        f.write("# Netscape HTTP Cookie File\n")
+        for cookie in cookies:
+            domain = cookie["domain"]
+            http_only = "TRUE" if cookie.get("httpOnly") else "FALSE"
+            path = cookie["path"]
+            secure = "TRUE" if cookie["secure"] else "FALSE"
+            expiry = cookie.get("expires", "")
+            name = cookie["name"]
+            value = cookie["value"]
+            f.write(f"{domain}\t{http_only}\t{path}\t{secure}\t{expiry}\t{name}\t{value}\n")
+
+def refresh_youtube_cookies():
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            load_cookies(page.context, cookies_file)
+            page.goto(youtube_url)
+            time.sleep(5)  # Allow time for cookies to take effect
+            save_cookies(page, cookies_file)
+            browser.close()
+            logging.info("YouTube cookies refreshed.")
+    except Exception as e:
+        logging.error(f"Error refreshing cookies: {e}")
+
+def decode_utf8_with_replace(byte_string):
+    try:
+        decoded_string = byte_string.decode('utf-8')
+        return urllib.parse.unquote(decoded_string)
+    except UnicodeDecodeError:
+        decoded_string = byte_string.decode('utf-8', errors='replace')
+        return urllib.parse.unquote(decoded_string)
+
+def sanitize_filename(filename):
+    """Sanitizes a filename by removing or replacing problematic characters."""
+    allowed_chars = r"[^a-zA-Z0-9_\-\.\(\) ]"  # Allow letters, numbers, underscores, hyphens, periods, parentheses, and spaces
+    sanitized_name = re.sub(allowed_chars, "_", filename)
+    return sanitized_name
+
+def download_video(url, dir, format, ffmpeg_location=r"ffmpeg-master-latest-win64-gpl-shared\bin\ffmpeg.exe"):
+    refresh_youtube_cookies()  # Refresh cookies before each download
+    netscape_cookies = "netscape_cookies.txt"
+    convert_to_netscape(cookies_file, netscape_cookies)
+
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            try:
+                logging.info(f"Downloading {url} to {dir} in {format} format.")
+                page.goto(url)
+                time.sleep(3)
+                final_url_bytes = page.url.encode('utf-8')
+                final_url = decode_utf8_with_replace(final_url_bytes)
+            except Exception as e:
+                logging.error(f"Playwright error: {e}")
+                browser.close()
+                return {"error": f"Playwright error: {e}"}
+            browser.close()
+
+        if format == "mp3":
+            command = (
+                f'yt-dlp -f bestaudio --extract-audio --audio-format mp3 '
+                f'--cookies "{netscape_cookies}" '
+                f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
+                f'--ffmpeg-location "{ffmpeg_location}" "{final_url}"'
+            )
+            result = subprocess.run(command, shell=True, capture_output=True, text=True)
+            if result.returncode != 0:
+                logging.error(f"yt-dlp error: {result.stderr}")
+                return {"error": f"yt-dlp error: {result.stderr}"}
+            mp3_files = glob.glob(os.path.join(dir, "*.mp3"))
+            if not mp3_files:
+                return {"error": "No mp3 files were downloaded."}
+            file_names = [os.path.basename(file) for file in mp3_files]
+            sanitized_file_names = [sanitize_filename(name) for name in file_names]
+            files_to_rename = [] #store the files that need to be renamed.
+            for original, sanitized in zip(file_names, sanitized_file_names):
+                if original != sanitized:
+                    files_to_rename.append((os.path.join(dir,original),os.path.join(dir,sanitized)))
+            return {"success": sanitized_file_names, "files_to_rename": files_to_rename}
+        elif format == "mp4":
+            command_video = (
+                f'yt-dlp -f bestvideo[ext=mp4] --cookies "{netscape_cookies}" '
+                f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
+                f'--ffmpeg-location "{ffmpeg_location}" "{final_url}"'
+            )
+            command_audio = (
+                f'yt-dlp -f bestaudio[ext=m4a] --cookies "{netscape_cookies}" '
+                f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
+                f'--ffmpeg-location "{ffmpeg_location}" "{final_url}"'
+            )
+            result_video = subprocess.run(command_video, shell=True, capture_output=True, text=True)
+            result_audio = subprocess.run(command_audio, shell=True, capture_output=True, text=True)
+            if result_video.returncode != 0:
+                logging.error(f"yt-dlp video error: {result_video.stderr}")
+                return {"error": f"yt-dlp video error: {result_video.stderr}"}
+            if result_audio.returncode != 0:
+                logging.error(f"yt-dlp audio error: {result_audio.stderr}")
+                return {"error": f"yt-dlp audio error: {result_audio.stderr}"}
+            video_files = glob.glob(os.path.join(dir, "*.mp4"))
+            audio_files = glob.glob(os.path.join(dir, "*.m4a"))
+            if len(video_files) != len(audio_files):
+                return {"error": "Mismatch between video and audio files."}
+            output_files = []
+            files_to_delete = []  # Store paths of files to delete later
+
+            for video_file, audio_file in zip(video_files, audio_files):
+                output_file = os.path.splitext(video_file)[0] + "_final.mp4"
+                merge_command = (
+                    f'"{ffmpeg_location}" -i "{video_file}" -i "{audio_file}" '
+                    f'-c:v copy -c:a aac -strict experimental "{output_file}"'
+                )
+                try:
+                    subprocess.run(merge_command, shell=True, check=True)
+                    output_files.append(os.path.basename(output_file))
+                    files_to_delete.append(video_file)  # Store for later deletion
+                    files_to_delete.append(audio_file)  # Store for later deletion
+
+                except subprocess.CalledProcessError as e:
+                    logging.error(f"FFmpeg merge error: {e.stderr}")
+                    return {"error": f"FFmpeg merge error: {e.stderr}"}
+                except Exception as e:
+                    logging.error(f"Error merging files: {e}")
+                    return {"error": f"Error merging files: {e}"}
+
+            sanitized_output_files = [sanitize_filename(name) for name in output_files]
+            for original, sanitized in zip(output_files, sanitized_output_files):
+                if original != sanitized:
+                    os.rename(os.path.join(dir, original), os.path.join(dir, sanitized))
+
+            return {"success": sanitized_output_files, "files_to_delete": files_to_delete} #return the files to be deleted
+
+    except Exception as overall_e:
+        logging.error(f"Overall download error: {overall_e}")
+        return {"error": f"Overall download error: {overall_e}"}
+
+# Example usage:
+if __name__ == "__main__":
+    url_to_download = "YOUR_YOUTUBE_URL_HERE"  # Replace with the actual YouTube URL
+    download_directory = "downloads"
+    ffmpeg_path = r"ffmpeg-master-latest-win64-gpl-shared\bin\ffmpeg.exe" #replace with your ffmpeg path.
+
+    if not os.path.exists(download_directory):
+        os.makedirs(download_directory)
+
+    # Example: Download as MP3
+    mp3_result = download_video(url_to_download, download_directory, "mp3", ffmpeg_path)
+    if "success" in mp3_result:
+        logging.info(f"MP3 download successful: {mp3_result['success']}")
+        if "files_to_rename" in mp3_result:
+            for original, sanitized in mp3_result["files_to_rename"]:
+                try:
+                    os.rename(original, sanitized)
+                except Exception as e:
+                    logging.error(f"Error renaming {original} to {sanitized}: {e}")
+
+    elif "error" in mp3_result:
+        logging.error(f"MP3 download failed: {mp3_result['error']}")
+
+    # Example: Download as MP4
+    mp4_result = download_video(url_to_download, download_directory, "mp4", ffmpeg_path)
+    if "success" in mp4_result:
+        logging.info(f"MP4 download successful: {mp4_result['success']}")
+        # Serve the files to the user...
+        # ... after serving is complete:
+        if "files_to_delete" in mp4_result:
+            for file_path in mp4_result["files_to_delete"]:
+                try:
+                    os.remove(file_path)
+                except Exception as e:
+                    logging.error(f"Error deleting file {file_path}: {e}")
+    elif "error" in mp4_result:
+        logging.error(f"MP4 download failed: {mp4_result['error']}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+//app.py
+import os
+import shutil
+import json
+import uuid
+import time
+import subprocess
+from flask import Flask, request, jsonify, send_from_directory, render_template, make_response
+from download import download_video
+from urllib.parse import unquote
+import logging
+import threading
+import queue
+import io
+
+BASE_DOWNLOAD_DIR = "./static/music"
+if not os.path.exists(BASE_DOWNLOAD_DIR):
+    os.makedirs(BASE_DOWNLOAD_DIR)
+
+app = Flask(__name__)
+app.secret_key = 'your_secret_key'
+
+# Setup Flask logger with UTF-8 encoding
+app.logger.setLevel(logging.DEBUG)
+file_handler = logging.FileHandler('app.log', encoding='utf-8')
+file_handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+app.logger.addHandler(file_handler)
+
+def cleanup_unused_folders():
+    try:
+        current_time = time.time()
+        EXPIRATION_TIME = 6 * 60
+        for folder in os.listdir(BASE_DOWNLOAD_DIR):
+            folder_path = os.path.join(BASE_DOWNLOAD_DIR, folder)
+            if os.path.isdir(folder_path):
+                folder_mod_time = os.path.getmtime(folder_path)
+                if current_time - folder_mod_time > EXPIRATION_TIME:
+                    shutil.rmtree(folder_path)
+                    app.logger.info(f"Deleted folder due to inactivity: {folder_path}")
+    except Exception as e:
+        app.logger.error(f"Error during cleanup: {e}")
+
+@app.before_request
+def before_request():
+    cleanup_unused_folders()
+
+def is_mobile(user_agent):
+    mobile_agents = ["Android", "iPhone", "iPad", "Windows Phone"]
+    for agent in mobile_agents:
+        if agent in user_agent:
+            return True
+    return False
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    user_folder = str(uuid.uuid4())
+    user_download_path = os.path.join(BASE_DOWNLOAD_DIR, user_folder)
+    if not os.path.exists(user_download_path):
+        os.makedirs(user_download_path)
+
+    user_agent = request.headers.get("User-Agent")
+    if is_mobile(user_agent):
+        template = "index_mobile.html"
+    else:
+        template = "index.html"
+
+    if request.method == "POST":
+        url = request.form.get("url")
+        format = request.form.get("format", "mp3")
+
+        if not url:
+            app.logger.warning("No URL provided by user")
+            return jsonify({"error": "URL is required"}), 400
+
+        try:
+            app.logger.info(f"Attempting to download video from URL: {url}")
+            result_queue = queue.Queue()
+
+            def run_download():
+                result = download_video(url, user_download_path, format)
+                with app.app_context():
+                    if "error" in result:
+                        app.logger.error(f"Download failed: {result['error']}")
+                        retry_download(url, user_download_path, format, result_queue)
+                    else:
+                        downloaded_files = result["success"]
+                        if "files_to_rename" in result:
+                            for original, sanitized in result["files_to_rename"]:
+                                try:
+                                    os.rename(original, sanitized)
+                                except Exception as e:
+                                    app.logger.error(f"Error renaming {original} to {sanitized}: {e}")
+                        response = make_response(jsonify(downloaded_files))
+                        response.set_cookie("downloaded_files", json.dumps(downloaded_files), path="/", httponly=True)
+                        response.set_cookie("user_folder", user_folder, path="/", httponly=True)
+                        app.logger.info(f"Files downloaded successfully: {downloaded_files}")
+                        result_queue.put(response)
+                        if "files_to_delete" in result:
+                            response.set_cookie("files_to_delete", json.dumps(result["files_to_delete"]), path="/", httponly=True)
+
+            thread = threading.Thread(target=run_download)
+            thread.start()
+            thread.join()
+            result = result_queue.get()
+            return result
+
+        except Exception as e:
+            app.logger.error(f"Download failed: {e}")
+            return jsonify({"error": f"Download failed: {e}"}), 500
+
+    return render_template(template)
+
+def retry_download(url, user_download_path, format, result_queue, max_retries=80):
+    retries = 0
+    while retries < max_retries:
+        retries += 1
+        app.logger.info(f"Retrying download (attempt {retries}/{max_retries}) for URL: {url}")
+        result = download_video(url, user_download_path, format)
+        if "error" not in result:
+            with app.app_context():
+                downloaded_files = result["success"]
+                if "files_to_rename" in result:
+                    for original, sanitized in result["files_to_rename"]:
+                        try:
+                            os.rename(original, sanitized)
+                        except Exception as e:
+                            app.logger.error(f"Error renaming {original} to {sanitized}: {e}")
+                response = make_response(jsonify(downloaded_files))
+                response.set_cookie("downloaded_files", json.dumps(downloaded_files), path="/", httponly=True)
+                response.set_cookie("user_folder", os.path.basename(user_download_path), path="/", httponly=True)
+                app.logger.info(f"Retry download successful: {downloaded_files}")
+                result_queue.put(response)
+                if "files_to_delete" in result:
+                    response.set_cookie("files_to_delete", json.dumps(result["files_to_delete"]), path="/", httponly=True)
+                return
+        else:
+            app.logger.error(f"Retry download failed: {result['error']}")
+              # Wait before retrying
+
+    with app.app_context():
+        result_queue.put(jsonify({"error": "Download failed after multiple retries."}), 500)
+
+def delete_file_with_retry(file_path, retries=20, delay=1):
+    for attempt in range(retries):
+        try:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+                app.logger.info(f"Deleted file: {file_path}")
+                return True
+            else:
+                app.logger.warning(f"File not found: {file_path}")
+                return False
+        except PermissionError as e:
+            app.logger.warning(f"PermissionError while deleting {file_path}: {e}")
+            if attempt < retries - 1:
+                app.logger.info(f"Retrying to delete {file_path} in {delay} seconds...")
+                time.sleep(delay)
+            else:
+                app.logger.error(f"Failed to delete file after {retries} attempts: {file_path}")
+                return False
+        except Exception as e:
+            app.logger.error(f"Error deleting file {file_path}: {e}")
+            return False
+    return False
+
+@app.route("/clear_files", methods=["POST"])
+def clear_files():
+    user_folder = request.cookies.get("user_folder")
+    if not user_folder:
+        return jsonify({"error": "No user-specific folder found"}), 400
+    user_download_path = os.path.join(BASE_DOWNLOAD_DIR, user_folder)
+    downloaded_files_cookie = request.cookies.get("downloaded_files")
+    downloaded_files = json.loads(downloaded_files_cookie) if downloaded_files_cookie else []
+    app.logger.info(f"Files to clear from {user_folder}: {downloaded_files}")
+    if not downloaded_files:
+        app.logger.warning("No files found to clear")
+        return jsonify({"error": "No files found to clear"}), 400
+    try:
+        for file_name in downloaded_files:
+            decoded_filename = unquote(file_name)  # Corrected line
+            file_path = os.path.join(user_download_path, decoded_filename) #Added line
+            app.logger.info(f"Attempting to delete file: {file_path}")
+            success = delete_file_with_retry(file_path)
+            if not success:
+                app.logger.error(f"Failed to delete file: {file_path}")
+        response = make_response(jsonify({"success": True, "message": "Specified files cleared successfully"}))
+        response.set_cookie("downloaded_files", "", expires=0)
+        response.set_cookie("user_folder", "", expires=0)
+        app.logger.info(f"User folder {user_folder} cleared successfully.")
+        return response
+    except Exception as e:
+        app.logger.error(f"Error while clearing files: {e}")
+        return jsonify({"error": f"Failed to clear files: {e}"}), 500
+
+@app.route("/faq")
+def faq():
+    user_agent = request.headers.get("User-Agent")
+    if is_mobile(user_agent):
+        template = "faq_mobile.html" 
+    else:
+        template = "faq.html"
+    return render_template(template)
+
+def delete_folder_with_retry(folder_path, retries=5, delay=1):
+    for attempt in range(retries):
+        try:
+            if not os.listdir(folder_path):
+                shutil.rmtree(folder_path)
+                app.logger.info(f"Deleted folder: {folder_path}")
+                return True
+            else:
+                app.logger.info(f"Folder not empty, retrying to delete: {folder_path}")
+        except Exception as e:
+            app.logger.warning(f"Error deleting folder {folder_path}: {e}")
+        time.sleep(delay)
+    app.logger.error(f"Failed to delete folder after {retries} attempts: {folder_path}")
+    return False
+
+@app.route("/static/music/<path:filename>")
+def serve_music_file(filename):
+    user_folder = request.cookies.get("user_folder")
+    if not user_folder:
+        return "Unauthorized", 403
+    user_download_path = os.path.join(BASE_DOWNLOAD_DIR, user_folder)
+    decoded_filename = unquote(filename)
+    file_path = os.path.join(user_download_path, decoded_filename)
+    if not os.path.exists(file_path):
+        app.logger.warning(f"File not found: {file_path}")
+        return "File not found", 404
+    response = send_from_directory(user_download_path, decoded_filename)
+
+    files_to_delete_cookie = request.cookies.get("files_to_delete")
+    files_to_delete = json.loads(files_to_delete_cookie) if files_to_delete_cookie else []
+    for filepath in files_to_delete:
+        try:
+            if os.path.exists(filepath):
+                os.remove(filepath)
+                app.logger.info(f"Deleted file after serving: {filepath}")
+        except Exception as e:
+            app.logger.error(f"Error deleting file after serving {filepath}: {e}")
+
+    # Attempt to delete the served file after sending
+    try:
+        os.remove(file_path)
+        app.logger.info(f"Deleted served file: {file_path}")
+    except Exception as e:
+        app.logger.error(f"Error deleting served file {file_path}: {e}")
+
+    # Attempt to delete the folder after serving
+    success = delete_folder_with_retry(user_download_path)
+    return response
+
+def run_command(command):
+    app.logger.info(f"Running command: {command}")
+    try:
+        result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        app.logger.info(f"Command output: {result.stdout}")
+        if result.stderr:
+            app.logger.error(f"Command error: {result.stderr}")
+        return result.stdout, result.stderr
+    except subprocess.CalledProcessError as e:
+        app.logger.error(f"Command failed with error: {e.stderr}")
+        return e.stdout, e.stderr
+
+if __name__ == "__main__":
+    app.run(debug=True)
