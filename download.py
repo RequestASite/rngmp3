@@ -109,6 +109,7 @@ def sanitize_filename(filename):
     sanitized_name = re.sub(allowed_chars, "_", filename)
     return sanitized_name
 
+
 def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location=r"ffmpeg-master-latest-win64-gpl-shared\bin\ffmpeg.exe"):
     """
     Downloads a video or audio from a given URL, with cookie support, and handles file renaming.
