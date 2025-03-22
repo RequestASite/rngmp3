@@ -6,7 +6,7 @@ import glob
 import re
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', encoding='latin-1')
 
 def convert_to_netscape(input_file, output_file):
     """
@@ -17,7 +17,7 @@ def convert_to_netscape(input_file, output_file):
         output_file (str): Path to the output file to save cookies in Netscape format.
     """
     try:
-        with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
+        with open(input_file, 'r', encoding='latin-1') as infile, open(output_file, 'w', encoding='latin-1') as outfile: #added encoding
             outfile.write("# Netscape HTTP Cookie File\n")
             for line in infile:
                 parts = line.strip().split('\t')
@@ -44,7 +44,7 @@ def load_cookies(cookies_file):
         return []
 
     try:
-        with open(cookies_file, 'r') as f:
+        with open(cookies_file, 'r', encoding='latin-1') as f: #added encoding
             for line in f:
                 line = line.strip()
                 if not line.startswith("#"):
@@ -80,7 +80,7 @@ def save_cookies(cookies, cookies_file):
         cookies_file (str): Path to the output file to save cookies.
     """
     try:
-        with open(cookies_file, 'w') as f:
+        with open(cookies_file, 'w', encoding='latin-1') as f: #added encoding
             f.write("# Netscape HTTP Cookie File\n")
             for cookie in cookies:
                 domain = cookie["domain"]
@@ -97,10 +97,10 @@ def save_cookies(cookies, cookies_file):
 
 def decode_utf8_with_replace(byte_string):
     try:
-        decoded_string = byte_string.decode('utf-8')
+        decoded_string = byte_string.decode('latin-1') #changed from utf-8
         return urllib.parse.unquote(decoded_string)
     except UnicodeDecodeError:
-        decoded_string = byte_string.decode('utf-8', errors='replace')
+        decoded_string = byte_string.decode('latin-1', errors='replace') #changed from utf-8
         return urllib.parse.unquote(decoded_string)
 
 def sanitize_filename(filename):
@@ -122,8 +122,8 @@ def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location
 
     Returns:
         dict:  A dictionary with either an "error" key and its message, or a "success" key
-               and a list of downloaded file names, and "files_to_rename"
-               which contains tuples of (original_path, sanitized_path)
+                and a list of downloaded file names, and "files_to_rename"
+                which contains tuples of (original_path, sanitized_path)
     """
     netscape_cookies = "netscape_cookies.txt"
     convert_to_netscape(cookies_file, netscape_cookies) #convert the cookies
@@ -143,7 +143,7 @@ def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location
                 f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
                 f'--ffmpeg-location "{ffmpeg_location}" "{final_url}"'
             )
-            result = subprocess.run(command, shell=True, capture_output=True, text=True)
+            result = subprocess.run(command, shell=True, capture_output=True, text=True, encoding='latin-1') #added encoding
             if result.returncode != 0:
                 logging.error(f"yt-dlp error: {result.stderr}")
                 return {"error": f"yt-dlp error: {result.stderr}"}
@@ -168,8 +168,8 @@ def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location
                 f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
                 f'--ffmpeg-location "{ffmpeg_location}" "{final_url}"'
             )
-            result_video = subprocess.run(command_video, shell=True, capture_output=True, text=True)
-            result_audio = subprocess.run(command_audio, shell=True, capture_output=True, text=True)
+            result_video = subprocess.run(command_video, shell=True, capture_output=True, text=True, encoding='latin-1') #added encoding
+            result_audio = subprocess.run(command_audio, shell=True, capture_output=True, text=True, encoding='latin-1') #added encoding
             if result_video.returncode != 0:
                 logging.error(f"yt-dlp video error: {result_video.stderr}")
                 return {"error": f"yt-dlp video error: {result_video.stderr}"}
@@ -190,7 +190,7 @@ def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location
                     f'-c:v copy -c:a aac -strict experimental "{output_file}"'
                 )
                 try:
-                    subprocess.run(merge_command, shell=True, check=True)
+                    subprocess.run(merge_command, shell=True, check=True, encoding='latin-1') #added encoding
                     output_files.append(os.path.basename(output_file))
                     files_to_delete.append(video_file)  # Store for later deletion
                     files_to_delete.append(audio_file)  # Store for later deletion
