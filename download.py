@@ -145,7 +145,7 @@ def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location
             if ffmpeg_location: # Only add ffmpeg_location if it's provided
                 command += f'--ffmpeg-location "{ffmpeg_location}" '
             command += f'"{final_url}"'
-            result = subprocess.run(command, shell=True, capture_output=True, text=True, encoding='latin-1')
+            result = subprocess.run(command, shell=True, capture_output=True, text=True, encoding='latin-1', errors='replace')
             if result.returncode != 0:
                 logging.error(f"yt-dlp error: {result.stderr}")
                 return {"error": f"yt-dlp error: {result.stderr}"}
