@@ -109,8 +109,7 @@ def sanitize_filename(filename):
     sanitized_name = re.sub(allowed_chars, "_", filename)
     return sanitized_name
 
-
-def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location=r"ffmpeg-master-latest-win64-gpl-shared\bin\ffmpeg.exe"):
+def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location=None): # Changed default ffmpeg_location to None
     """
     Downloads a video or audio from a given URL, with cookie support, and handles file renaming.
 
@@ -119,7 +118,7 @@ def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location
         dir (str): The directory to save the downloaded file(s) to.
         format (str):  "mp3" for audio-only, "mp4" for video.
         cookies_file (str, optional): Path to the Netscape-formatted cookie file. Defaults to "cookies.txt".
-        ffmpeg_location (str, optional): Path to the ffmpeg executable. Defaults to a relative path.
+        ffmpeg_location (str, optional): Path to the ffmpeg executable. Defaults to None.
 
     Returns:
         dict:  A dictionary with either an "error" key and its message, or a "success" key
@@ -142,9 +141,11 @@ def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location
                 f'yt-dlp -f bestaudio --extract-audio --audio-format mp3 '
                 f'--cookies "{netscape_cookies}" '
                 f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
-                f'--ffmpeg-location "{ffmpeg_location}" "{final_url}"'
             )
-            result = subprocess.run(command, shell=True, capture_output=True, text=True, encoding='latin-1') #added encoding
+            if ffmpeg_location: # Only add ffmpeg_location if it's provided
+                command += f'--ffmpeg-location "{ffmpeg_location}" '
+            command += f'"{final_url}"'
+            result = subprocess.run(command, shell=True, capture_output=True, text=True, encoding='latin-1')
             if result.returncode != 0:
                 logging.error(f"yt-dlp error: {result.stderr}")
                 return {"error": f"yt-dlp error: {result.stderr}"}
@@ -162,15 +163,21 @@ def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location
             command_video = (
                 f'yt-dlp -f bestvideo[ext=mp4] --cookies "{netscape_cookies}" '
                 f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
-                f'--ffmpeg-location "{ffmpeg_location}" "{final_url}"'
             )
+            if ffmpeg_location: # Only add ffmpeg_location if it's provided
+                command_video += f'--ffmpeg-location "{ffmpeg_location}" '
+            command_video += f'"{final_url}"'
+
             command_audio = (
                 f'yt-dlp -f bestaudio[ext=m4a] --cookies "{netscape_cookies}" '
                 f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
-                f'--ffmpeg-location "{ffmpeg_location}" "{final_url}"'
             )
-            result_video = subprocess.run(command_video, shell=True, capture_output=True, text=True, encoding='latin-1') #added encoding
-            result_audio = subprocess.run(command_audio, shell=True, capture_output=True, text=True, encoding='latin-1') #added encoding
+            if ffmpeg_location: # Only add ffmpeg_location if it's provided
+                command_audio += f'--ffmpeg-location "{ffmpeg_location}" '
+            command_audio += f'"{final_url}"'
+            
+            result_video = subprocess.run(command_video, shell=True, capture_output=True, text=True, encoding='latin-1', errors='replace') #added errors='replace'
+            result_audio = subprocess.run(command_audio, shell=True, capture_output=True, text=True, encoding='latin-1', errors='replace') #added errors='replace'
             if result_video.returncode != 0:
                 logging.error(f"yt-dlp video error: {result_video.stderr}")
                 return {"error": f"yt-dlp video error: {result_video.stderr}"}
@@ -191,7 +198,7 @@ def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location
                     f'-c:v copy -c:a aac -strict experimental "{output_file}"'
                 )
                 try:
-                    subprocess.run(merge_command, shell=True, check=True, encoding='latin-1') #added encoding
+                    subprocess.run(merge_command, shell=True, check=True, encoding='latin-1')
                     output_files.append(os.path.basename(output_file))
                     files_to_delete.append(video_file)  # Store for later deletion
                     files_to_delete.append(audio_file)  # Store for later deletion
