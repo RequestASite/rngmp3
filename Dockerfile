@@ -10,6 +10,11 @@ COPY requirements.txt .
 # Install any dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install playwright
+
+# Force playwright install to run by invalidating cache
+RUN date > /tmp/force_rebuild 
+
+# Install playwright browsers
 RUN playwright install
 
 # Copy the application code into the container

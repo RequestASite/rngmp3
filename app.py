@@ -7,7 +7,7 @@ import subprocess
 from flask import Flask, request, jsonify, send_from_directory, render_template, make_response
 from download import download_video
 from urllib.parse import unquote
-import logging  
+import logging
 import threading
 import queue
 import io
@@ -26,7 +26,7 @@ file_handler.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(formatter)
 app.logger.addHandler(file_handler)
-     
+
 def cleanup_unused_folders():
     try:
         current_time = time.time()
@@ -51,6 +51,47 @@ def is_mobile(user_agent):
         if agent in user_agent:
             return True
     return False
+
+def run_command(command):
+    app.logger.info(f"Running command: {command}")
+    try:
+        result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        app.logger.info(f"Command output: {result.stdout}")
+        if result.stderr:
+            app.logger.error(f"Command error: {result.stderr}")
+        return result.stdout, result.stderr
+    except subprocess.CalledProcessError as e:
+        app.logger.error(f"Command failed with error: {e.stderr}")
+        return e.stdout, e.stderr
+
+# Check Playwright installation
+def check_playwright():
+    try:
+        import playwright
+        app.logger.info("Playwright is already installed.")
+    except ImportError:
+        app.logger.warning("Playwright is not installed. Installing...")
+        try:
+            # Install Playwright and its dependencies
+            stdout, stderr = run_command("pip install playwright")
+            if stderr:
+                app.logger.error(f"Error installing playwright: {stderr}")
+                return False
+            stdout, stderr = run_command("playwright install --with-deps")
+            if stderr:
+                app.logger.error(f"Error installing playwright dependencies: {stderr}")
+                return False
+            app.logger.info("Playwright installed successfully.")
+            return True
+        except Exception as e:
+            app.logger.error(f"Failed to install Playwright: {e}")
+            return False
+    return True
+
+# Check Playwright installation before the app starts
+if not check_playwright():
+    print("Playwright installation failed. The application may not function correctly.")
+    # Consider raising an exception or exiting if Playwright is critical
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -108,7 +149,7 @@ def index():
         except Exception as e:
             app.logger.error(f"Download failed: {e}")
             return jsonify({"error": f"Download failed: {e}"}), 500
-         
+
     return render_template(template)
 
 def retry_download(url, user_download_path, format, result_queue, max_retries=80):
@@ -136,11 +177,11 @@ def retry_download(url, user_download_path, format, result_queue, max_retries=80
                 return
         else:
             app.logger.error(f"Retry download failed: {result['error']}")
-              # Wait before retrying
+            # Wait before retrying
 
     with app.app_context():
         result_queue.put(jsonify({"error": "Download failed after multiple retries."}), 500)
-
+        
 def delete_file_with_retry(file_path, retries=20, delay=1):
     for attempt in range(retries):
         try:
@@ -179,7 +220,7 @@ def clear_files():
     try:
         for file_name in downloaded_files:
             decoded_filename = unquote(file_name)  # Corrected line
-            file_path = os.path.join(user_download_path, decoded_filename) #Added line
+            file_path = os.path.join(user_download_path, decoded_filename)  # Added line
             app.logger.info(f"Attempting to delete file: {file_path}")
             success = delete_file_with_retry(file_path)
             if not success:
@@ -197,7 +238,7 @@ def clear_files():
 def faq():
     user_agent = request.headers.get("User-Agent")
     if is_mobile(user_agent):
-        template = "faq_mobile.html" 
+        template = "faq_mobile.html"
     else:
         template = "faq.html"
     return render_template(template)
@@ -250,18 +291,6 @@ def serve_music_file(filename):
     # Attempt to delete the folder after serving
     success = delete_folder_with_retry(user_download_path)
     return response
-
-def run_command(command):
-    app.logger.info(f"Running command: {command}")
-    try:
-        result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        app.logger.info(f"Command output: {result.stdout}")
-        if result.stderr:
-            app.logger.error(f"Command error: {result.stderr}")
-        return result.stdout, result.stderr
-    except subprocess.CalledProcessError as e:
-        app.logger.error(f"Command failed with error: {e.stderr}")
-        return e.stdout, e.stderr
 
 if __name__ == "__main__":
     app.run(debug=True)
