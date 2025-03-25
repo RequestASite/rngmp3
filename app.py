@@ -5,7 +5,7 @@ import uuid
 import time
 import subprocess
 from flask import Flask, request, jsonify, send_from_directory, render_template, make_response
-from download import download_video  # Import the download_video function
+from download import download_video
 from urllib.parse import unquote
 import logging
 import threading
@@ -52,7 +52,6 @@ def is_mobile(user_agent):
             return True
     return False
 
-
 @app.route("/", methods=["GET", "POST"])
 def index():
     user_folder = str(uuid.uuid4())
@@ -79,30 +78,26 @@ def index():
             result_queue = queue.Queue()
 
             def run_download():
-                # Pass the cookies_file to the download_video function
-                result = download_video(url, user_download_path, format, cookies_file="cookies.txt")
+                result = download_video(url, user_download_path, format)
                 with app.app_context():
                     if "error" in result:
                         app.logger.error(f"Download failed: {result['error']}")
                         retry_download(url, user_download_path, format, result_queue)
                     else:
                         downloaded_files = result["success"]
-                        files_to_rename = result.get("files_to_rename", [])  # Get files_to_rename
-                        files_to_delete = result.get("files_to_delete", [])
-
-                        for original, sanitized in files_to_rename:
-                            try:
-                                os.rename(original, sanitized)
-                            except Exception as e:
-                                app.logger.error(f"Error renaming {original} to {sanitized}: {e}")
-
+                        if "files_to_rename" in result:
+                            for original, sanitized in result["files_to_rename"]:
+                                try:
+                                    os.rename(original, sanitized)
+                                except Exception as e:
+                                    app.logger.error(f"Error renaming {original} to {sanitized}: {e}")
                         response = make_response(jsonify(downloaded_files))
                         response.set_cookie("downloaded_files", json.dumps(downloaded_files), path="/", httponly=True)
                         response.set_cookie("user_folder", user_folder, path="/", httponly=True)
-                        if files_to_delete:
-                            response.set_cookie("files_to_delete", json.dumps(files_to_delete), path="/", httponly=True)
                         app.logger.info(f"Files downloaded successfully: {downloaded_files}")
                         result_queue.put(response)
+                        if "files_to_delete" in result:
+                            response.set_cookie("files_to_delete", json.dumps(result["files_to_delete"]), path="/", httponly=True)
 
             thread = threading.Thread(target=run_download)
             thread.start()
@@ -116,42 +111,35 @@ def index():
 
     return render_template(template)
 
-
-
 def retry_download(url, user_download_path, format, result_queue, max_retries=80):
     retries = 0
     while retries < max_retries:
         retries += 1
         app.logger.info(f"Retrying download (attempt {retries}/{max_retries}) for URL: {url}")
-        # Pass the cookies_file to the download_video function
-        result = download_video(url, user_download_path, format, cookies_file="cookies.txt")
+        result = download_video(url, user_download_path, format)
         if "error" not in result:
             with app.app_context():
                 downloaded_files = result["success"]
-                files_to_rename = result.get("files_to_rename", [])  # Get files_to_rename
-                files_to_delete = result.get("files_to_delete", [])
-
-                for original, sanitized in files_to_rename:
-                    try:
-                        os.rename(original, sanitized)
-                    except Exception as e:
-                        app.logger.error(f"Error renaming {original} to {sanitized}: {e}")
+                if "files_to_rename" in result:
+                    for original, sanitized in result["files_to_rename"]:
+                        try:
+                            os.rename(original, sanitized)
+                        except Exception as e:
+                            app.logger.error(f"Error renaming {original} to {sanitized}: {e}")
                 response = make_response(jsonify(downloaded_files))
                 response.set_cookie("downloaded_files", json.dumps(downloaded_files), path="/", httponly=True)
                 response.set_cookie("user_folder", os.path.basename(user_download_path), path="/", httponly=True)
-                if files_to_delete:
-                    response.set_cookie("files_to_delete", json.dumps(files_to_delete), path="/", httponly=True)
                 app.logger.info(f"Retry download successful: {downloaded_files}")
                 result_queue.put(response)
+                if "files_to_delete" in result:
+                    response.set_cookie("files_to_delete", json.dumps(result["files_to_delete"]), path="/", httponly=True)
                 return
         else:
             app.logger.error(f"Retry download failed: {result['error']}")
-            # Wait before retrying
+              # Wait before retrying
 
     with app.app_context():
         result_queue.put(jsonify({"error": "Download failed after multiple retries."}), 500)
-
-
 
 def delete_file_with_retry(file_path, retries=20, delay=1):
     for attempt in range(retries):
@@ -176,8 +164,6 @@ def delete_file_with_retry(file_path, retries=20, delay=1):
             return False
     return False
 
-
-
 @app.route("/clear_files", methods=["POST"])
 def clear_files():
     user_folder = request.cookies.get("user_folder")
@@ -190,11 +176,10 @@ def clear_files():
     if not downloaded_files:
         app.logger.warning("No files found to clear")
         return jsonify({"error": "No files found to clear"}), 400
-
     try:
         for file_name in downloaded_files:
             decoded_filename = unquote(file_name)  # Corrected line
-            file_path = os.path.join(user_download_path, decoded_filename)  # Added line
+            file_path = os.path.join(user_download_path, decoded_filename) #Added line
             app.logger.info(f"Attempting to delete file: {file_path}")
             success = delete_file_with_retry(file_path)
             if not success:
@@ -208,16 +193,14 @@ def clear_files():
         app.logger.error(f"Error while clearing files: {e}")
         return jsonify({"error": f"Failed to clear files: {e}"}), 500
 
-
 @app.route("/faq")
 def faq():
     user_agent = request.headers.get("User-Agent")
     if is_mobile(user_agent):
-        template = "faq_mobile.html"
+        template = "faq_mobile.html" 
     else:
         template = "faq.html"
     return render_template(template)
-
 
 def delete_folder_with_retry(folder_path, retries=5, delay=1):
     for attempt in range(retries):
@@ -234,7 +217,6 @@ def delete_folder_with_retry(folder_path, retries=5, delay=1):
     app.logger.error(f"Failed to delete folder after {retries} attempts: {folder_path}")
     return False
 
-
 @app.route("/static/music/<path:filename>")
 def serve_music_file(filename):
     user_folder = request.cookies.get("user_folder")
@@ -247,9 +229,9 @@ def serve_music_file(filename):
         app.logger.warning(f"File not found: {file_path}")
         return "File not found", 404
     response = send_from_directory(user_download_path, decoded_filename)
+
     files_to_delete_cookie = request.cookies.get("files_to_delete")
     files_to_delete = json.loads(files_to_delete_cookie) if files_to_delete_cookie else []
-
     for filepath in files_to_delete:
         try:
             if os.path.exists(filepath):
@@ -269,8 +251,17 @@ def serve_music_file(filename):
     success = delete_folder_with_retry(user_download_path)
     return response
 
+def run_command(command):
+    app.logger.info(f"Running command: {command}")
+    try:
+        result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        app.logger.info(f"Command output: {result.stdout}")
+        if result.stderr:
+            app.logger.error(f"Command error: {result.stderr}")
+        return result.stdout, result.stderr
+    except subprocess.CalledProcessError as e:
+        app.logger.error(f"Command failed with error: {e.stderr}")
+        return e.stdout, e.stderr
 
 if __name__ == "__main__":
-    app.run(host="10.0.0.4", debug=True, port = 5000)
-
-
+    app.run(debug=True)

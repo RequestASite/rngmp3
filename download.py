@@ -1,23 +1,21 @@
 import os
 import subprocess
+from playwright.sync_api import sync_playwright
 import logging
+import time
 import urllib.parse
 import glob
-import re
+import re  # Import the regular expression module
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', encoding='latin-1')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+cookies_file = "cookies.txt"
+youtube_url = "https://www.youtube.com"  # URL to check if cookies are valid
 
 def convert_to_netscape(input_file, output_file):
-    """
-    Converts cookies from a simple tab-separated format to the Netscape format.
-
-    Args:
-        input_file (str): Path to the input file containing cookies.
-        output_file (str): Path to the output file to save cookies in Netscape format.
-    """
     try:
-        with open(input_file, 'r', encoding='latin-1') as infile, open(output_file, 'w', encoding='latin-1') as outfile: #added encoding
+        with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
             outfile.write("# Netscape HTTP Cookie File\n")
             for line in infile:
                 parts = line.strip().split('\t')
@@ -28,23 +26,9 @@ def convert_to_netscape(input_file, output_file):
     except Exception as e:
         logging.error(f"Error converting cookies: {e}")
 
-def load_cookies(cookies_file):
-    """
-    Loads cookies from a Netscape-formatted file.
-
-    Args:
-        cookies_file (str): Path to the Netscape cookie file.
-
-    Returns:
-        list: A list of cookie dictionaries, or an empty list on error.
-    """
-    cookies = []
-    if not os.path.exists(cookies_file):
-        logging.warning(f"Cookie file not found: {cookies_file}")
-        return []
-
-    try:
-        with open(cookies_file, 'r', encoding='latin-1') as f: #added encoding
+def load_cookies(context, cookies_file):
+    if os.path.exists(cookies_file):
+        with open(cookies_file, 'r') as f:
             for line in f:
                 line = line.strip()
                 if not line.startswith("#"):
@@ -62,45 +46,42 @@ def load_cookies(cookies_file):
                             cookie['expires'] = None
                         cookie['name'] = parts[5]
                         cookie['value'] = parts[6]
-                        cookies.append(cookie)
-                    else:
-                        logging.warning(f"Skipping invalid cookie line: {line}")
-        logging.info(f"Loaded {len(cookies)} cookies from {cookies_file}")
-        return cookies
-    except Exception as e:
-        logging.error(f"Error loading cookies: {e}")
-        return []
+                        context.add_cookies([cookie])
 
-def save_cookies(cookies, cookies_file):
-    """
-    Saves cookies to a file in Netscape format.
+def save_cookies(page, cookies_file):
+    cookies = page.context.cookies()
+    with open(cookies_file, 'w') as f:
+        f.write("# Netscape HTTP Cookie File\n")
+        for cookie in cookies:
+            domain = cookie["domain"]
+            http_only = "TRUE" if cookie.get("httpOnly") else "FALSE"
+            path = cookie["path"]
+            secure = "TRUE" if cookie["secure"] else "FALSE"
+            expiry = cookie.get("expires", "")
+            name = cookie["name"]
+            value = cookie["value"]
+            f.write(f"{domain}\t{http_only}\t{path}\t{secure}\t{expiry}\t{name}\t{value}\n")
 
-    Args:
-        cookies (list): A list of cookie dictionaries.
-        cookies_file (str): Path to the output file to save cookies.
-    """
+def refresh_youtube_cookies():
     try:
-        with open(cookies_file, 'w', encoding='latin-1') as f: #added encoding
-            f.write("# Netscape HTTP Cookie File\n")
-            for cookie in cookies:
-                domain = cookie["domain"]
-                http_only = "TRUE" if cookie.get("httpOnly") else "FALSE"
-                path = cookie["path"]
-                secure = "TRUE" if cookie["secure"] else "FALSE"
-                expiry = cookie.get("expires", "")
-                name = cookie["name"]
-                value = cookie["value"]
-                f.write(f"{domain}\t{http_only}\t{path}\t{secure}\t{expiry}\t{name}\t{value}\n")
-        logging.info(f"Saved {len(cookies)} cookies to {cookies_file}")
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            load_cookies(page.context, cookies_file)
+            page.goto(youtube_url)
+            time.sleep(5)  # Allow time for cookies to take effect
+            save_cookies(page, cookies_file)
+            browser.close()
+            logging.info("YouTube cookies refreshed.")
     except Exception as e:
-        logging.error(f"Error saving cookies: {e}")
+        logging.error(f"Error refreshing cookies: {e}")
 
 def decode_utf8_with_replace(byte_string):
     try:
-        decoded_string = byte_string.decode('latin-1') #changed from utf-8
+        decoded_string = byte_string.decode('utf-8')
         return urllib.parse.unquote(decoded_string)
     except UnicodeDecodeError:
-        decoded_string = byte_string.decode('latin-1', errors='replace') #changed from utf-8
+        decoded_string = byte_string.decode('utf-8', errors='replace')
         return urllib.parse.unquote(decoded_string)
 
 def sanitize_filename(filename):
@@ -109,43 +90,35 @@ def sanitize_filename(filename):
     sanitized_name = re.sub(allowed_chars, "_", filename)
     return sanitized_name
 
-def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location=None): # Changed default ffmpeg_location to None
-    """
-    Downloads a video or audio from a given URL, with cookie support, and handles file renaming.
-
-    Args:
-        url (str): The URL of the video to download.
-        dir (str): The directory to save the downloaded file(s) to.
-        format (str):  "mp3" for audio-only, "mp4" for video.
-        cookies_file (str, optional): Path to the Netscape-formatted cookie file. Defaults to "cookies.txt".
-        ffmpeg_location (str, optional): Path to the ffmpeg executable. Defaults to None.
-
-    Returns:
-        dict:  A dictionary with either an "error" key and its message, or a "success" key
-                and a list of downloaded file names, and "files_to_rename"
-                which contains tuples of (original_path, sanitized_path)
-    """
+def download_video(url, dir, format, ffmpeg_location=r"ffmpeg-master-latest-win64-gpl-shared\bin\ffmpeg.exe"):
+    refresh_youtube_cookies()  # Refresh cookies before each download
     netscape_cookies = "netscape_cookies.txt"
-    convert_to_netscape(cookies_file, netscape_cookies) #convert the cookies
+    convert_to_netscape(cookies_file, netscape_cookies)
 
     try:
-        logging.info(f"Downloading {url} to {dir} in {format} format.")
-        final_url = url #in the previous version, the code was using playwright to get the final URL.
-    except Exception as e:
-        logging.error(f"Error: {e}")
-        return {"error": f"Error: {e}"}
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            try:
+                logging.info(f"Downloading {url} to {dir} in {format} format.")
+                page.goto(url)
+                time.sleep(3)
+                final_url_bytes = page.url.encode('utf-8')
+                final_url = decode_utf8_with_replace(final_url_bytes)
+            except Exception as e:
+                logging.error(f"Playwright error: {e}")
+                browser.close()
+                return {"error": f"Playwright error: {e}"}
+            browser.close()
 
-    try:
         if format == "mp3":
             command = (
                 f'yt-dlp -f bestaudio --extract-audio --audio-format mp3 '
                 f'--cookies "{netscape_cookies}" '
                 f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
+                f'--ffmpeg-location "{ffmpeg_location}" "{final_url}"'
             )
-            if ffmpeg_location: # Only add ffmpeg_location if it's provided
-                command += f'--ffmpeg-location "{ffmpeg_location}" '
-            command += f'"{final_url}"'
-            result = subprocess.run(command, shell=True, capture_output=True, text=True, encoding='latin-1', errors='replace')
+            result = subprocess.run(command, shell=True, capture_output=True, text=True)
             if result.returncode != 0:
                 logging.error(f"yt-dlp error: {result.stderr}")
                 return {"error": f"yt-dlp error: {result.stderr}"}
@@ -154,30 +127,24 @@ def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location
                 return {"error": "No mp3 files were downloaded."}
             file_names = [os.path.basename(file) for file in mp3_files]
             sanitized_file_names = [sanitize_filename(name) for name in file_names]
-            files_to_rename = []  # store the files that need to be renamed.
+            files_to_rename = [] #store the files that need to be renamed.
             for original, sanitized in zip(file_names, sanitized_file_names):
                 if original != sanitized:
-                    files_to_rename.append((os.path.join(dir, original), os.path.join(dir, sanitized)))
+                    files_to_rename.append((os.path.join(dir,original),os.path.join(dir,sanitized)))
             return {"success": sanitized_file_names, "files_to_rename": files_to_rename}
         elif format == "mp4":
             command_video = (
                 f'yt-dlp -f bestvideo[ext=mp4] --cookies "{netscape_cookies}" '
                 f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
+                f'--ffmpeg-location "{ffmpeg_location}" "{final_url}"'
             )
-            if ffmpeg_location: # Only add ffmpeg_location if it's provided
-                command_video += f'--ffmpeg-location "{ffmpeg_location}" '
-            command_video += f'"{final_url}"'
-
             command_audio = (
                 f'yt-dlp -f bestaudio[ext=m4a] --cookies "{netscape_cookies}" '
                 f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
+                f'--ffmpeg-location "{ffmpeg_location}" "{final_url}"'
             )
-            if ffmpeg_location: # Only add ffmpeg_location if it's provided
-                command_audio += f'--ffmpeg-location "{ffmpeg_location}" '
-            command_audio += f'"{final_url}"'
-            
-            result_video = subprocess.run(command_video, shell=True, capture_output=True, text=True, encoding='latin-1', errors='replace') #added errors='replace'
-            result_audio = subprocess.run(command_audio, shell=True, capture_output=True, text=True, encoding='latin-1', errors='replace') #added errors='replace'
+            result_video = subprocess.run(command_video, shell=True, capture_output=True, text=True)
+            result_audio = subprocess.run(command_audio, shell=True, capture_output=True, text=True)
             if result_video.returncode != 0:
                 logging.error(f"yt-dlp video error: {result_video.stderr}")
                 return {"error": f"yt-dlp video error: {result_video.stderr}"}
@@ -198,7 +165,7 @@ def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location
                     f'-c:v copy -c:a aac -strict experimental "{output_file}"'
                 )
                 try:
-                    subprocess.run(merge_command, shell=True, check=True, encoding='latin-1')
+                    subprocess.run(merge_command, shell=True, check=True)
                     output_files.append(os.path.basename(output_file))
                     files_to_delete.append(video_file)  # Store for later deletion
                     files_to_delete.append(audio_file)  # Store for later deletion
@@ -211,14 +178,12 @@ def download_video(url, dir, format, cookies_file="cookies.txt", ffmpeg_location
                     return {"error": f"Error merging files: {e}"}
 
             sanitized_output_files = [sanitize_filename(name) for name in output_files]
-            files_to_rename = []
             for original, sanitized in zip(output_files, sanitized_output_files):
                 if original != sanitized:
-                    files_to_rename.append((os.path.join(dir,original),os.path.join(dir,sanitized)))
+                    os.rename(os.path.join(dir, original), os.path.join(dir, sanitized))
 
-            return {"success": sanitized_output_files, "files_to_delete": files_to_delete, "files_to_rename": files_to_rename}  # return the files to be deleted
-        else:
-            return {"error": f"Invalid format: {format}"}
+            return {"success": sanitized_output_files, "files_to_delete": files_to_delete} #return the files to be deleted
+
     except Exception as overall_e:
         logging.error(f"Overall download error: {overall_e}")
         return {"error": f"Overall download error: {overall_e}"}
