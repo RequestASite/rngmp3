@@ -1,6 +1,9 @@
 import os
 import subprocess
-from playwright.sync_api import sync_playwright
+from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
+from PyQt5.QtCore import QUrl, QEventLoop
+from PyQt5.QtWidgets import QApplication #Import QApplication
+import sys
 import logging
 import time
 import urllib.parse
@@ -62,19 +65,6 @@ def save_cookies(page, cookies_file):
             value = cookie["value"]
             f.write(f"{domain}\t{http_only}\t{path}\t{secure}\t{expiry}\t{name}\t{value}\n")
 
-def refresh_youtube_cookies():
-    try:
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            page = browser.new_page()
-            load_cookies(page.context, cookies_file)
-            page.goto(youtube_url)
-            time.sleep(5)  # Allow time for cookies to take effect
-            save_cookies(page, cookies_file)
-            browser.close()
-            logging.info("YouTube cookies refreshed.")
-    except Exception as e:
-        logging.error(f"Error refreshing cookies: {e}")
 
 def decode_utf8_with_replace(byte_string):
     try:
@@ -90,28 +80,52 @@ def sanitize_filename(filename):
     sanitized_name = re.sub(allowed_chars, "_", filename)
     return sanitized_name
 
-def download_video(url, dir, format, ffmpeg_location=r"ffmpeg-master-latest-win64-gpl-shared\bin\ffmpeg.exe"):
-    refresh_youtube_cookies()  # Refresh cookies before each download
+
+
+
+def get_final_url(url):
+    app = QApplication(sys.argv) # Create QApplication instance.
+    manager = QNetworkAccessManager()
+    request = QNetworkRequest(QUrl(url))
+    reply = manager.get(request)
+    loop = QEventLoop()
+    reply.finished.connect(loop.quit)
+    loop.exec_()
+
+    try:
+        if reply.error() == QNetworkReply.NoError:
+            final_url = reply.url().toString()
+            reply.deleteLater()
+            app.quit() #quit the application
+            return final_url
+        else:
+            logging.error(f"Network error: {reply.errorString()}")
+            reply.deleteLater()
+            app.quit() #quit the application
+            return None
+    except Exception as e:
+        logging.error(f"Error fetching final URL: {e}")
+        if reply:
+            reply.deleteLater()
+        app.quit() #quit the application
+        return None
+
+def download_video(url, dir, format, ffmpeg_location=r"ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe"):
     netscape_cookies = "netscape_cookies.txt"
     convert_to_netscape(cookies_file, netscape_cookies)
 
     try:
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            page = browser.new_page()
-            try:
-                logging.info(f"Downloading {url} to {dir} in {format} format.")
-                page.goto(url)
-                time.sleep(3)
-                final_url_bytes = page.url.encode('utf-8')
-                final_url = decode_utf8_with_replace(final_url_bytes)
-            except Exception as e:
-                logging.error(f"Playwright error: {e}")
-                browser.close()
-                return {"error": f"Playwright error: {e}"}
-            browser.close()
+        logging.info(f"Downloading {url} to {dir} in {format} format.")
+        final_url = get_final_url(url)
+        if final_url is None:
+            return {"error": "Failed to retrieve final URL"}
+        time.sleep(3)
 
-        if format == "mp3":
+    except Exception as e: # added except clause.
+        logging.error(f"Error getting final URL: {e}")
+        return {"error": f"Error getting final URL: {e}"}   
+        
+    if format == "mp3":
             command = (
                 f'yt-dlp -f bestaudio --extract-audio --audio-format mp3 '
                 f'--cookies "{netscape_cookies}" '
@@ -132,7 +146,7 @@ def download_video(url, dir, format, ffmpeg_location=r"ffmpeg-master-latest-win6
                 if original != sanitized:
                     files_to_rename.append((os.path.join(dir,original),os.path.join(dir,sanitized)))
             return {"success": sanitized_file_names, "files_to_rename": files_to_rename}
-        elif format == "mp4":
+    elif format == "mp4":
             command_video = (
                 f'yt-dlp -f bestvideo[ext=mp4] --cookies "{netscape_cookies}" '
                 f'-o "{os.path.join(dir, "%(title)s.%(ext)s")}" '
@@ -184,6 +198,4 @@ def download_video(url, dir, format, ffmpeg_location=r"ffmpeg-master-latest-win6
 
             return {"success": sanitized_output_files, "files_to_delete": files_to_delete} #return the files to be deleted
 
-    except Exception as overall_e:
-        logging.error(f"Overall download error: {overall_e}")
-        return {"error": f"Overall download error: {overall_e}"}
+     
