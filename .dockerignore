@@ -15,4 +15,3 @@ node_modules/
 *.swp
 *~
 !/rngmp3/  # Include the rngmp3 directory (or whatever your workdir is)
-# Remove any lines that explicitly exclude cookies.txt or netscape_cookies.txt

@@ -263,5 +263,3 @@ def run_command(command):
         app.logger.error(f"Command failed with error: {e.stderr}")
         return e.stdout, e.stderr
 
-if __name__ == "__main__":
-    app.run(debug=True)
