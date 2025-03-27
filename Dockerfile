@@ -3,6 +3,7 @@ FROM python:3.9-slim-buster
 
 # Install system-level OpenGL libraries
 RUN apt-get update && apt-get install -y libgl1-mesa-glx
+RUN apt-get update && apt-get install -y libkrb5-3
 
 # Set the working directory in the container
 WORKDIR /app
