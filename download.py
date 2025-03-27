@@ -1,14 +1,12 @@
 import os
 import subprocess
-from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
-from PyQt5.QtCore import QUrl, QEventLoop
-from PyQt5.QtWidgets import QApplication #Import QApplication
 import sys
+import requests
 import logging
-import time
 import urllib.parse
 import glob
-import re  # Import the regular expression module
+import re 
+import time # Import the regular expression module
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -83,31 +81,16 @@ def sanitize_filename(filename):
 
 
 
-def get_final_url(url):
-    app = QApplication(sys.argv) # Create QApplication instance.
-    manager = QNetworkAccessManager()
-    request = QNetworkRequest(QUrl(url))
-    reply = manager.get(request)
-    loop = QEventLoop()
-    reply.finished.connect(loop.quit)
-    loop.exec_()
+import requests
+import logging
 
+def get_final_url(url):
     try:
-        if reply.error() == QNetworkReply.NoError:
-            final_url = reply.url().toString()
-            reply.deleteLater()
-            app.quit() #quit the application
-            return final_url
-        else:
-            logging.error(f"Network error: {reply.errorString()}")
-            reply.deleteLater()
-            app.quit() #quit the application
-            return None
-    except Exception as e:
+        response = requests.get(url, allow_redirects=True)
+        response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
+        return response.url
+    except requests.exceptions.RequestException as e:
         logging.error(f"Error fetching final URL: {e}")
-        if reply:
-            reply.deleteLater()
-        app.quit() #quit the application
         return None
 
 def download_video(url, dir, format, ffmpeg_location=r"ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe"):
